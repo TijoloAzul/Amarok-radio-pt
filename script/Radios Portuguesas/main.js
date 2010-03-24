@@ -6,11 +6,14 @@
 #   iniciative to broadcast portuguese small regional radios on Internet  #
 #                                                                         #
 #    ---------------------------------------------------------------------------------------  #
+#												#
+#      									#
+#
 #                                                                         #
-#   Simple script shamelessly recopied and adapted from:                              #
+#   Reused some parts of code from previous scripts made by:  #
 #                                                                         #
 #   Copyright                                                             #
-#                                                                         #
+#   (C)  2010 Zipizap <zipizap123@gmail.com> #
 #   (C)  2009 Àlvar Cuevas i Fajardo <alvar@cuevas.cat>                   #
 #   (C)  2008 Eirik Johansen Bjørgan  <eirikjbj@gmail.com>                #
 #   (C)  2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>       #
@@ -36,6 +39,158 @@
 Importer.loadQtBinding("qt.core");
 Importer.loadQtBinding("qt.gui");
 
+function dObj(obj, identBase) {
+    /*This function:
+      - will return a string with a tree representation of obj
+      
+      identBase is an optional string, that wil be used as a sufix in all lines 
+
+      Example:
+        function O(){
+         this.name="a O object instance";
+        }
+        Tree={
+          a1:"A",
+          a2:new O(),
+          a3: {
+            b1:true,
+            b2: [
+              "b2_0", 
+              "b2_1", 
+              false,
+              {
+                c1:"C1",
+                c2: [ 0,1,2,3]
+              }
+            ]
+          },
+          a4 : null,
+          a5 : "last"
+        };
+
+        Tree.
+          .a1 = "A"
+          .a2 = 2
+          .a3.
+            .b1 = true
+            .b2[]
+              [0] = "b2_0"
+              [1] = "b2_1"
+              [2] = false
+              [3].
+                .c1 = "C1"
+                .c2[]
+                  [0] = 0
+                  [1] = 1
+                  [2] = 2
+                  [3] = 3
+          .a4 = <null>
+          .a5 = "last"
+      */
+    var identBase = ( (typeof identBase == "undefined")? "" : identBase );  
+    var identChild=identBase+"  ";
+    var thisFunc=arguments.callee;
+    var txt = "";
+    /*
+        Tree.                     identBase
+          .b1 = "B1"           identChild
+    */
+    function fillTxt(arg) {
+      /*
+      This function will only modify the outer variable "txt" and return nothing.
+      
+      Uses outer variables:
+        txt, obj, identChild, thisFunc()
+      */
+      switch (arg) {
+        case "null" : {
+          txt = " = ("+typeof obj+") <null>\n";
+          break;
+        }
+        case "array" : {
+          txt+= "[]\n";
+          for ( i=0; i<obj.length; i++) 
+            txt += identChild + "["+i+"]"+ thisFunc(obj[i],identChild);
+          break;
+        }
+        case "object" : {
+          txt += ". ("+obj.constructor.name+")\n";
+          for (prop in obj)
+            txt += identChild + "."+prop+ thisFunc(obj[prop],identChild);
+          break;
+        }
+        case "function" : {
+          /*Note: in case function has object properties they will be shown, and in those cases, it will
+          always appear the ".prototype" property, even if it was untouched - it just appears nonetheless.
+          */
+          txt+=" = function "+obj.name+"()";
+          { // If it has user-defined object-properties, then 
+            var count=0;
+            for (prop_i in obj)
+              if (prop_i!="prototype")
+                count++;
+            if (count > 0) 
+              fillTxt("object");
+            else
+              txt+="\n";
+          }
+          break;
+        }
+        case "string" : {
+          txt+= ' = ('+typeof obj+') "' + obj +'"\n';
+          break;
+        }
+        default : {
+          txt+= " = ("+typeof obj+") " + obj +"\n";
+          break;
+        }
+      }
+    } // end fillTxt()
+    switch (typeof obj) {
+      /*
+      Type 	Result
+      Undefined 	"undefined"
+      Null 	"object"
+      Boolean 	"boolean"
+      Number 	"number"
+      String 	"string"
+      Host object (provided by the JS environment) 	Implementation-dependent
+      Function object (implements [[Call]] in ECMA-262 terms) 	"function"
+      E4X XML object 	"xml"
+      E4X XMLList object 	"xml"
+      Any other object 	"object"
+      */
+      case "object" : {
+        // Array, object, Null
+        if (obj === null) { 
+          fillTxt("null");
+          break;
+        }
+        if (obj instanceof Array) {
+          fillTxt("array");
+          break;
+        }
+        /*else, a normal object*/ {
+          fillTxt("object");
+          break;
+        }
+      }
+      case "function" : {
+        fillTxt("function");
+        break;
+      }
+      case "string" : {
+        fillTxt("string");
+        break;
+      }
+      default : {
+        fillTxt("abything-else");
+        break;
+      }
+    } // end switch
+    return txt;
+} // end of dObj
+
 
 /*
 __Amarok service info:
@@ -48,7 +203,7 @@ http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0
 Station.
   .stationName
   .stationUrl
-  .stationDescription
+  .stationDescription						// can be html code!
 
 Category.
 	.categoryName
@@ -57,7 +212,8 @@ Category.
   .addStation (stationName, stationUrl, stationDescription)
 
 	
-List.
+RadioCatalogue.
+	.categoriesList
   .addCategory (categoryName, categoryImage )
 
 ---------------------- old objects
@@ -89,36 +245,31 @@ function RadioCatalogue() {
 	this.categoriesList=[];
 	this.addCategory = function addCategory( categoryName,  categoryImage) 
 	{ 
+		categoryImage=( (categoryImage=="") ?  (Amarok.Info.scriptPath() + "/" + "icon_categoryDefault.png") : (categoryImage) ) ;
 		var newCategory = new Category (categoryName,  categoryImage);
 		this.categoriesList.push(newCategory);
 		return newCategory;
 	}
 }
+
 myRadioCatalogue=new RadioCatalogue();
 
+arr=["tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.png","tmp_cat64x40.png"];
 
-myRadioCatalogue.addCategory(
-				"27 radios: nacionais ou recomendadas ou interessantes",  
-				"img_1.png" 
-		)
-		.addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
-		.addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
-			
-	
-
-
-{//Code for category Images
-    //---Comments---
-    //One image for each category (not for each station)
-    //The images are 96x60 pixels, giff files (other formats/sizes should also be accepted, to be tested)
-    //The following code should serve as a template to be easily modified (and uncommented):
+for (var i=0; i<arr.length; i++) {
+	myRadioCatalogue.addCategory(arr[i],  arr[i]).addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" ).addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" );
+  Amarok.alert("myRadioCatalogue.categoriesList[myRadioCatalogue.categoriesList.length-1]="+dObj(myRadioCatalogue.categoriesList[myRadioCatalogue.categoriesList.length-1],""));
 }
+
+
+	//myRadioCatalogue.addCategory("tmp_cat120x75.png","tmp_cat120x75.png").addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" );
+	//Amarok.alert("myRadioCatalogue.categoriesList.length="+myRadioCatalogue.categoriesList.length);
+
 
 function Service()
 {
     //ScriptableServiceScript.call( this, "Radios Portuguesas", 2, "Escuta em directo as inumeras radios regionais portuguesas", "TODO: USE HTML HERE!!!Emissoes em directo das radios regionais portuguesas", false );
     ScriptableServiceScript.call( this, "Radios Portuguesas", 2, "Escuta em directo as inumeras radios regionais portuguesas", "<h2>Norwegian Mountain Trip</h2>", false );
-    Amarok.debug( "ok." );
 }
 
 function onConfigure()
@@ -130,42 +281,66 @@ function onPopulating( level, callbackData, filter )
 {
     if ( level == 1 ) 
     {
+			/*
+				level =1
+				callbackData = ""
+				filter = completely ignored
+			*/		
 			for( var cat_index=0; cat_index < myRadioCatalogue.categoriesList.length; cat_index++)
 			{
 				var category=myRadioCatalogue.categoriesList[cat_index];
-        {//Code to take care of category Images existence/inexistence
-          var categoryCover = ((typeof images[att] === 'undefined')) ?  (Amarok.Info.scriptPath() + "/" + "icon_categoryDefault.png") : (Amarok.Info.scriptPath() + "/" + images[att]);
-        }
+				Amarok.alert("category="+dObj(category,""));
 				Amarok.debug ("Adicionando categoria: " + att);
 				item = Amarok.StreamItem;
 				item.level = 1;
-				item.callbackData = att;
-				item.itemName = att;
+				item.callbackData = category;
+				item.itemName = category.categoryName;
 				item.playableUrl = "";
 				item.infoHtml = "";
-				item.coverUrl = categoryCover;
+				item.coverUrl = category.categoryImage;
+				Amarok.alert("IT GOT HERE ALSO!!!");
+
 				script.insertItem( item );
 			}
 			script.donePopulating();
     }
     else if ( level == 0 ) 
     {
+			/*
+				level =0
+				callbackData = Category-instance
+				filter = completely ignored
+			*/
 			Amarok.debug( " Recompilando emissoras..." );
-			var stationArray = categories[callbackData];
-			for ( i = 0; i < stationArray.length; i++ )
+			var stationsList = callbackData.stationsList;
+			for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
 			{
-        {//Code to take care of station Images existence/inexistence
-          var stationCover = ((typeof images[callbackData] === 'undefined')) ? (Amarok.Info.scriptPath() + "/" + "icon_stationDefault.png") : (Amarok.Info.scriptPath() + "/" + images[callbackData]);
-        }
+				var station=stationsList[sta_index];
+/*
+Station.
+  .stationName
+  .stationUrl
+  .stationDescription
+
+Category.
+	.categoryName
+  .categoryImage
+  .stationsList[]
+  .addStation (stationName, stationUrl, stationDescription)
+	
+RadioCatalogue.
+	.categoriesList
+  .addCategory (categoryName, categoryImage )
+*/
         item = Amarok.StreamItem;
 				item.level = 0;
 				item.callbackData = "";
-				item.itemName = stationArray[i].name;
-				item.playableUrl = stationArray[i].url;
-				item.album = stationArray[i].name; // callbackData;
-				item.infoHtml = stationArray[i].description;
+				item.itemName = station.stationName;
+				item.playableUrl = station.stationUrl;
+				item.album = callbackData.categoryName; 
+				item.infoHtml = station.stationDescription;
 				item.artist = "Radio-online";
-				item.coverUrl = stationCover;
+				item.coverUrl = "";
 				script.insertItem( item );
 			}
 			script.donePopulating();
