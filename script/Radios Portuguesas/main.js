@@ -53,14 +53,15 @@ Station.
   .stationDescription						// can be html code!
 
 Category.
-	.categoryName
+  .categoryName
   .categoryImage
+  .categoryHtmlDescription
   .stationsList[]
   .addStation (stationName, stationUrl, stationDescription)
 
-	
+  
 RadiosCatalogue.
-	.categoriesList
+  .categoriesList
   .addCategory (categoryName, categoryImage )
 
 ---------------------- old objects
@@ -77,31 +78,33 @@ images.
 */
 
 function RadiosCatalogue() {
-	function Category (categoryName,  categoryImage){
-		function Station (stationName, stationUrl, stationDescription)
-		{
-				this.stationName = stationName;
-				this.stationUrl = stationUrl
-				this.stationDescription = stationDescription;
-		}
-		this.categoryName=categoryName;     				//text string
-		this.categoryImage = Amarok.Info.scriptPath() + "/" + categoryImage;					// filename (path relative to main.js directory )
-		this.stationsList = [];
-		this.addStation = function addStation (stationName, stationUrl, stationDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationDescription ) ); return this;}
-	}
-	this.categoriesList=[];
-	this.addCategory = function addCategory( categoryName,  categoryImage) 
-	{ 
-		categoryImage=( (categoryImage=="") ?  ("icon_categoryDefault.png") : (categoryImage) ) ;
-		var newCategory = new Category (categoryName,  categoryImage);
-		this.categoriesList.push(newCategory);
-		return newCategory;
-	}
+  function Category (categoryName,  categoryImage){
+    function Station (stationName, stationUrl, stationDescription)
+    {
+        this.stationName = stationName;
+        this.stationUrl = stationUrl
+        this.stationDescription = stationDescription;
+    }
+    this.categoryName=categoryName;     				//text string
+    this.categoryImage = Amarok.Info.scriptPath() + "/" + categoryImage;					// filename (path relative to main.js directory )
+    this.categoryHtmlDescription = "TODO HERE!!!\n" + '<img src="'+this.categoryImage+'" />';
+    this.stationsList = [];
+    this.addStation = function addStation (stationName, stationUrl, stationDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationDescription ) ); return this;}
+  }
+  this.categoriesList=[];
+  this.addCategory = function addCategory( categoryName,  categoryImage) 
+  { 
+    categoryImage=( (categoryImage=="") ?  ("icon_categoryDefault.png") : (categoryImage) ) ;
+    var newCategory = new Category (categoryName,  categoryImage);
+    this.categoriesList.push(newCategory);
+    return newCategory;
+  }
 }
 
 myRadiosCatalogue=new RadiosCatalogue();
 
-arr=["tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.png","tmp_cat64x40.png"];
+//arr=["tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.png","tmp_cat64x40.png"];
+arr=["icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
 for (var i=0; i<arr.length; i++) {
   myRadiosCatalogue.addCategory(arr[i],  arr[i])
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
@@ -125,35 +128,35 @@ function onPopulating( level, callbackData, filter )
 {
     if ( level == 1 ) 
     {
-			/*
-				level = 1
-				callbackData = ""
-				filter = completely ignored
-			*/		
-			for( var cat_index=0; cat_index < myRadiosCatalogue.categoriesList.length; cat_index++)
-			{
-				var category=myRadiosCatalogue.categoriesList[cat_index];
-				item = Amarok.StreamItem;
-				item.level = 1;
-				item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object or function!!!
-				item.itemName = category.categoryName;
-				item.playableUrl = "";
-				item.infoHtml = category.categoryName+'<img src="'+category.categoryImage+'" />';
-				item.coverUrl = category.categoryImage;
-				script.insertItem( item );
+      /*
+        level = 1
+        callbackData = ""
+        filter = completely ignored
+      */		
+      for( var cat_index=0; cat_index < myRadiosCatalogue.categoriesList.length; cat_index++)
+      {
+        var category=myRadiosCatalogue.categoriesList[cat_index];
+        item = Amarok.StreamItem;
+        item.level = 1;
+        item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object or function!!!
+        item.itemName = category.categoryName;
+        item.playableUrl = "";
+        item.infoHtml = category.categoryHtmlDescription;
+        item.coverUrl = category.categoryImage;
+        script.insertItem( item );
         Amarok.alert("category.categoryName="+category.categoryName+"\n"+
                               "category.categoryImage="+category.categoryImage);
       }
-			script.donePopulating();
+      script.donePopulating();
     }
     else if ( level == 0 ) 
     {
-			/*
-				level =0
-				callbackData = index of the selected category within the array myRadiosCatalogue.categoriesList[]
-				filter = completely ignored
-			*/
-			var category=myRadiosCatalogue.categoriesList[callbackData];
+      /*
+        level =0
+        callbackData = index of the selected category within the array myRadiosCatalogue.categoriesList[]
+        filter = completely ignored
+      */
+      var category=myRadiosCatalogue.categoriesList[callbackData];
       var stationsList = category.stationsList;
       /* Remembering:
         Station.
@@ -164,6 +167,7 @@ function onPopulating( level, callbackData, filter )
         Category.
           .categoryName
           .categoryImage
+          .categoryHtmlDescription
           .stationsList[]
           .addStation (stationName, stationUrl, stationDescription)
           
@@ -171,21 +175,21 @@ function onPopulating( level, callbackData, filter )
           .categoriesList
           .addCategory (categoryName, categoryImage )
       */
-			for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
-			{
-				var station=stationsList[sta_index];
+      for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
+      {
+        var station=stationsList[sta_index];
         item = Amarok.StreamItem;
-				item.level = 0;
-				item.callbackData = "";
-				item.itemName = station.stationName;
-				item.playableUrl = station.stationUrl;
-				item.album = category.categoryName; 
-				item.infoHtml = station.stationDescription;
-				item.artist = "Radio-online";
-				item.coverUrl = "";
-				script.insertItem( item );
-			}
-			script.donePopulating();
+        item.level = 0;
+        item.callbackData = "";
+        item.itemName = station.stationName;
+        item.playableUrl = station.stationUrl;
+        item.album = category.categoryName; 
+        item.infoHtml = station.stationDescription;
+        item.artist = "Radio-online";
+        item.coverUrl = "";
+        script.insertItem( item );
+      }
+      script.donePopulating();
     }
 }
 

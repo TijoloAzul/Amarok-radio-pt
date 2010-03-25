@@ -1,0 +1,23 @@
+Vou apontando aqui para nao ir esquecendo:
+
+
+TODOs em geral:
+
+
+TODOs Imagens:
+ - Converter imagens .ai (PDF)  e .eps (PostScript) para um formato de imagem (bmp, giff, jpg, png)
+
+
+TODOs main.js e javascripts:
+ - Mudar o nome da categoria "27 radios blabla" para algo mais conciso (ver post http://tr.im/Tev9 )
+ - Adicionar ao main.js algumas streams de radios enviadas por Diogo ( ver post http://tr.im/TeuC )
+
+ - verificar que Amarok aceita formatos de imagens: 
+     => Verificado: 
+        Consegue ler: bmp, giff, jpg, png, svg, ps
+	NAO consegue ler: ai
+	Notas: 
+	  BMP nao é uma boa escolha - ficheiros sao mto grandes, nao tem transparencia, amarok fica mais lento
+	  Todos os outros formatos sao bem recebidos - em caso de escolha, eu decantava-me por algum que suporte transparencias, como PNG ou GIF (jpeg nao tem transparencia, que pena para o jpeg :( )
+
+
