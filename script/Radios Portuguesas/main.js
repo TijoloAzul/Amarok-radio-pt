@@ -39,159 +39,6 @@
 Importer.loadQtBinding("qt.core");
 Importer.loadQtBinding("qt.gui");
 
-function dObj(obj, identBase) {
-    /*This function:
-      - will return a string with a tree representation of obj
-      
-      identBase is an optional string, that wil be used as a sufix in all lines 
-
-      Example:
-        function O(){
-         this.name="a O object instance";
-        }
-        Tree={
-          a1:"A",
-          a2:new O(),
-          a3: {
-            b1:true,
-            b2: [
-              "b2_0", 
-              "b2_1", 
-              false,
-              {
-                c1:"C1",
-                c2: [ 0,1,2,3]
-              }
-            ]
-          },
-          a4 : null,
-          a5 : "last"
-        };
-
-        Tree.
-          .a1 = "A"
-          .a2 = 2
-          .a3.
-            .b1 = true
-            .b2[]
-              [0] = "b2_0"
-              [1] = "b2_1"
-              [2] = false
-              [3].
-                .c1 = "C1"
-                .c2[]
-                  [0] = 0
-                  [1] = 1
-                  [2] = 2
-                  [3] = 3
-          .a4 = <null>
-          .a5 = "last"
-      */
-    var identBase = ( (typeof identBase == "undefined")? "" : identBase );  
-    var identChild=identBase+"  ";
-    var thisFunc=arguments.callee;
-    var txt = "";
-    /*
-        Tree.                     identBase
-          .b1 = "B1"           identChild
-    */
-    function fillTxt(arg) {
-      /*
-      This function will only modify the outer variable "txt" and return nothing.
-      
-      Uses outer variables:
-        txt, obj, identChild, thisFunc()
-      */
-      switch (arg) {
-        case "null" : {
-          txt = " = ("+typeof obj+") <null>\n";
-          break;
-        }
-        case "array" : {
-          txt+= "[]\n";
-          for ( i=0; i<obj.length; i++) 
-            txt += identChild + "["+i+"]"+ thisFunc(obj[i],identChild);
-          break;
-        }
-        case "object" : {
-          txt += ". ("+obj.constructor.name+")\n";
-          for (prop in obj)
-            txt += identChild + "."+prop+ thisFunc(obj[prop],identChild);
-          break;
-        }
-        case "function" : {
-          /*Note: in case function has object properties they will be shown, and in those cases, it will
-          always appear the ".prototype" property, even if it was untouched - it just appears nonetheless.
-          */
-          txt+=" = function "+obj.name+"()";
-          { // If it has user-defined object-properties, then 
-            var count=0;
-            for (prop_i in obj)
-              if (prop_i!="prototype")
-                count++;
-            if (count > 0) 
-              fillTxt("object");
-            else
-              txt+="\n";
-          }
-          break;
-        }
-        case "string" : {
-          txt+= ' = ('+typeof obj+') "' + obj +'"\n';
-          break;
-        }
-        default : {
-          txt+= " = ("+typeof obj+") " + obj +"\n";
-          break;
-        }
-      }
-    } // end fillTxt()
-    switch (typeof obj) {
-      /*
-      Type 	Result
-      Undefined 	"undefined"
-      Null 	"object"
-      Boolean 	"boolean"
-      Number 	"number"
-      String 	"string"
-      Host object (provided by the JS environment) 	Implementation-dependent
-      Function object (implements [[Call]] in ECMA-262 terms) 	"function"
-      E4X XML object 	"xml"
-      E4X XMLList object 	"xml"
-      Any other object 	"object"
-      */
-      case "object" : {
-        // Array, object, Null
-        if (obj === null) { 
-          fillTxt("null");
-          break;
-        }
-        if (obj instanceof Array) {
-          fillTxt("array");
-          break;
-        }
-        /*else, a normal object*/ {
-          fillTxt("object");
-          break;
-        }
-      }
-      case "function" : {
-        fillTxt("function");
-        break;
-      }
-      case "string" : {
-        fillTxt("string");
-        break;
-      }
-      default : {
-        fillTxt("abything-else");
-        break;
-      }
-    } // end switch
-    return txt;
-} // end of dObj
-
-
 /*
 __Amarok service info:
 http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0
@@ -212,7 +59,7 @@ Category.
   .addStation (stationName, stationUrl, stationDescription)
 
 	
-RadioCatalogue.
+RadiosCatalogue.
 	.categoriesList
   .addCategory (categoryName, categoryImage )
 
@@ -229,7 +76,7 @@ images.
   
 */
 
-function RadioCatalogue() {
+function RadiosCatalogue() {
 	function Category (categoryName,  categoryImage){
 		function Station (stationName, stationUrl, stationDescription)
 		{
@@ -238,32 +85,29 @@ function RadioCatalogue() {
 				this.stationDescription = stationDescription;
 		}
 		this.categoryName=categoryName;     				//text string
-		this.categoryImage = categoryImage;					// filename (path relative to main.js directory )
+		this.categoryImage = Amarok.Info.scriptPath() + "/" + categoryImage;					// filename (path relative to main.js directory )
 		this.stationsList = [];
 		this.addStation = function addStation (stationName, stationUrl, stationDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationDescription ) ); return this;}
 	}
 	this.categoriesList=[];
 	this.addCategory = function addCategory( categoryName,  categoryImage) 
 	{ 
-		categoryImage=( (categoryImage=="") ?  (Amarok.Info.scriptPath() + "/" + "icon_categoryDefault.png") : (categoryImage) ) ;
+		categoryImage=( (categoryImage=="") ?  ("icon_categoryDefault.png") : (categoryImage) ) ;
 		var newCategory = new Category (categoryName,  categoryImage);
 		this.categoriesList.push(newCategory);
 		return newCategory;
 	}
 }
 
-myRadioCatalogue=new RadioCatalogue();
+myRadiosCatalogue=new RadiosCatalogue();
 
 arr=["tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.png","tmp_cat64x40.png"];
-
 for (var i=0; i<arr.length; i++) {
-	myRadioCatalogue.addCategory(arr[i],  arr[i]).addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" ).addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" );
-  Amarok.alert("myRadioCatalogue.categoriesList[myRadioCatalogue.categoriesList.length-1]="+dObj(myRadioCatalogue.categoriesList[myRadioCatalogue.categoriesList.length-1],""));
+  myRadiosCatalogue.addCategory(arr[i],  arr[i])
+    .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
+    .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
+    ;
 }
-
-
-	//myRadioCatalogue.addCategory("tmp_cat120x75.png","tmp_cat120x75.png").addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" );
-	//Amarok.alert("myRadioCatalogue.categoriesList.length="+myRadioCatalogue.categoriesList.length);
 
 
 function Service()
@@ -282,62 +126,60 @@ function onPopulating( level, callbackData, filter )
     if ( level == 1 ) 
     {
 			/*
-				level =1
+				level = 1
 				callbackData = ""
 				filter = completely ignored
 			*/		
-			for( var cat_index=0; cat_index < myRadioCatalogue.categoriesList.length; cat_index++)
+			for( var cat_index=0; cat_index < myRadiosCatalogue.categoriesList.length; cat_index++)
 			{
-				var category=myRadioCatalogue.categoriesList[cat_index];
-				Amarok.alert("category="+dObj(category,""));
-				Amarok.debug ("Adicionando categoria: " + att);
+				var category=myRadiosCatalogue.categoriesList[cat_index];
 				item = Amarok.StreamItem;
 				item.level = 1;
-				item.callbackData = category;
+				item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object or function!!!
 				item.itemName = category.categoryName;
 				item.playableUrl = "";
-				item.infoHtml = "";
+				item.infoHtml = category.categoryName+'<img src="'+category.categoryImage+'" />';
 				item.coverUrl = category.categoryImage;
-				Amarok.alert("IT GOT HERE ALSO!!!");
-
 				script.insertItem( item );
-			}
+        Amarok.alert("category.categoryName="+category.categoryName+"\n"+
+                              "category.categoryImage="+category.categoryImage);
+      }
 			script.donePopulating();
     }
     else if ( level == 0 ) 
     {
 			/*
 				level =0
-				callbackData = Category-instance
+				callbackData = index of the selected category within the array myRadiosCatalogue.categoriesList[]
 				filter = completely ignored
 			*/
-			Amarok.debug( " Recompilando emissoras..." );
-			var stationsList = callbackData.stationsList;
+			var category=myRadiosCatalogue.categoriesList[callbackData];
+      var stationsList = category.stationsList;
+      /* Remembering:
+        Station.
+          .stationName
+          .stationUrl
+          .stationDescription
+
+        Category.
+          .categoryName
+          .categoryImage
+          .stationsList[]
+          .addStation (stationName, stationUrl, stationDescription)
+          
+        RadiosCatalogue.
+          .categoriesList
+          .addCategory (categoryName, categoryImage )
+      */
 			for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
 			{
 				var station=stationsList[sta_index];
-/*
-Station.
-  .stationName
-  .stationUrl
-  .stationDescription
-
-Category.
-	.categoryName
-  .categoryImage
-  .stationsList[]
-  .addStation (stationName, stationUrl, stationDescription)
-	
-RadioCatalogue.
-	.categoriesList
-  .addCategory (categoryName, categoryImage )
-*/
         item = Amarok.StreamItem;
 				item.level = 0;
 				item.callbackData = "";
 				item.itemName = station.stationName;
 				item.playableUrl = station.stationUrl;
-				item.album = callbackData.categoryName; 
+				item.album = category.categoryName; 
 				item.infoHtml = station.stationDescription;
 				item.artist = "Radio-online";
 				item.coverUrl = "";
