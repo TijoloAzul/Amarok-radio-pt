@@ -50,14 +50,14 @@ http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0
 Station.
   .stationName
   .stationUrl
-  .stationDescription						// can be html code!
+  .stationHtmlDescription						// can be html code!
 
 Category.
   .categoryName
   .categoryImage
   .categoryHtmlDescription
   .stationsList[]
-  .addStation (stationName, stationUrl, stationDescription)
+  .addStation (stationName, stationUrl, stationHtmlDescription)
 
   
 RadiosCatalogue.
@@ -79,17 +79,17 @@ images.
 
 function RadiosCatalogue() {
   function Category (categoryName,  categoryImage){
-    function Station (stationName, stationUrl, stationDescription)
+    function Station (stationName, stationUrl, stationHtmlDescription)
     {
         this.stationName = stationName;
         this.stationUrl = stationUrl
-        this.stationDescription = stationDescription;
+        this.stationHtmlDescription = "ALSO MISSING SOME TODO HERE IN HTML " + stationHtmlDescription;
     }
     this.categoryName=categoryName;     				//text string
     this.categoryImage = Amarok.Info.scriptPath() + "/" + categoryImage;					// filename (path relative to main.js directory )
-    this.categoryHtmlDescription = "TODO HERE!!!\n" + '<img src="'+this.categoryImage+'" />';
+    this.categoryHtmlDescription = "TODO HERE!!!\n" + '<img src="'+this.categoryImage+'" />' + '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
     this.stationsList = [];
-    this.addStation = function addStation (stationName, stationUrl, stationDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationDescription ) ); return this;}
+    this.addStation = function addStation (stationName, stationUrl, stationHtmlDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationHtmlDescription ) ); return this;}
   }
   this.categoriesList=[];
   this.addCategory = function addCategory( categoryName,  categoryImage) 
@@ -103,7 +103,6 @@ function RadiosCatalogue() {
 
 myRadiosCatalogue=new RadiosCatalogue();
 
-//arr=["tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.png","tmp_cat64x40.png"];
 arr=["icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
 for (var i=0; i<arr.length; i++) {
   myRadiosCatalogue.addCategory(arr[i],  arr[i])
@@ -116,7 +115,10 @@ for (var i=0; i<arr.length; i++) {
 function Service()
 {
     //ScriptableServiceScript.call( this, "Radios Portuguesas", 2, "Escuta em directo as inumeras radios regionais portuguesas", "TODO: USE HTML HERE!!!Emissoes em directo das radios regionais portuguesas", false );
-    ScriptableServiceScript.call( this, "Radios Portuguesas", 2, "Escuta em directo as inumeras radios regionais portuguesas", "<h2>Norwegian Mountain Trip</h2>", false );
+    serviceName="Radios Portuguesas"; 
+    serviceSlogan="Escuta em directo as inumeras radios regionais portuguesas"; //small text
+    serviceHtmlDescription= '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';  //Html code wich will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
+    ScriptableServiceScript.call( this, serviceName, 2, serviceSlogan, serviceHtmlDescription, false );
 }
 
 function onConfigure()
@@ -144,8 +146,10 @@ function onPopulating( level, callbackData, filter )
         item.infoHtml = category.categoryHtmlDescription;
         item.coverUrl = category.categoryImage;
         script.insertItem( item );
+        /*
         Amarok.alert("category.categoryName="+category.categoryName+"\n"+
                               "category.categoryImage="+category.categoryImage);
+        */
       }
       script.donePopulating();
     }
@@ -162,14 +166,14 @@ function onPopulating( level, callbackData, filter )
         Station.
           .stationName
           .stationUrl
-          .stationDescription
+          .stationHtmlDescription
 
         Category.
           .categoryName
           .categoryImage
           .categoryHtmlDescription
           .stationsList[]
-          .addStation (stationName, stationUrl, stationDescription)
+          .addStation (stationName, stationUrl, stationHtmlDescription)
           
         RadiosCatalogue.
           .categoriesList
@@ -184,7 +188,7 @@ function onPopulating( level, callbackData, filter )
         item.itemName = station.stationName;
         item.playableUrl = station.stationUrl;
         item.album = category.categoryName; 
-        item.infoHtml = station.stationDescription;
+        item.infoHtml = station.stationHtmlDescription;
         item.artist = "Radio-online";
         item.coverUrl = "";
         script.insertItem( item );

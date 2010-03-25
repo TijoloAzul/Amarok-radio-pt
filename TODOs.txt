@@ -13,11 +13,52 @@ TODOs main.js e javascripts:
  - Adicionar ao main.js algumas streams de radios enviadas por Diogo ( ver post http://tr.im/TeuC )
 
  - verificar que Amarok aceita formatos de imagens: 
-     => Verificado: 
-        Consegue ler: bmp, giff, jpg, png, svg, ps
+		 => Verificado: 
+				Consegue ler: bmp, giff, jpg, png, svg, ps
 	NAO consegue ler: ai
 	Notas: 
-	  BMP nao é uma boa escolha - ficheiros sao mto grandes, nao tem transparencia, amarok fica mais lento
-	  Todos os outros formatos sao bem recebidos - em caso de escolha, eu decantava-me por algum que suporte transparencias, como PNG ou GIF (jpeg nao tem transparencia, que pena para o jpeg :( )
+		BMP nao é uma boa escolha - ficheiros sao mto grandes, nao tem transparencia, amarok fica mais lento
+		Todos os outros formatos sao bem recebidos - em caso de escolha, eu decantava-me por algum que suporte transparencias, como PNG ou GIF (jpeg nao tem transparencia, que pena para o jpeg :( )
+
+
+ - verificar comportamento Amarok com o tamanho das imagens
+		 => Verificado:
+				Para o script das radios existem varias imagens. As imagens que existem podem-se dividir em:
+			- Imagens que representam o script das radios portuguesas, ao lado dos demais scripts do amarok, no menu da Internet (imagem icone opcional + imagem grande opcional)
+			- varias imagens que representam cada categoria, dentro do script das radios portuguesas - no nosso caso, cada categoria é um distrito, ou seja, as imagens de cada distrito.
+			PS: nao me esqueci que queremos ter um menu para escolher/mudar a imagem do distrito - estou a começar isto com imagens estaticas, e depois que funcione dedico-me ao menu/opçao :)
+			
+			
+			
+	A imagem de uma categoria vai ser utilizada/mostrada em:
+		 - no menu-do-script, aquele que aparece no amarok mais á esqueda - a imagem representa a categoria e aparece com tamanho de 30X30 (ou 32x32, nao tenho a certeza), á esqueda do nome da categoria
+				 Neste caso, a imagem seja de que tamanho for, vai ser reduzida automaticamente pelo Amarok (nao temos poder sobre isto) e fica do tamanho de 30x30.
+				 Podemos especificar qual o ficheiro de imagem que queremos utilizar para isto - note-se que o ficheiro de imagem pode ser algo de 30x30 feito á medida, ou pode ser uma imagem 
+				 grande que o Amarok automaticamente reduz a 30x30.
+				 ??? Vale a pena fazer iconos especialmente para isto??!? 
+						-> Eu acho que as imagens que tivermos escolhido, uma vez reduzidas, podem ficar bem. Senao ja se verá
+				 
+		 - no applet "service-info" que se pode activar para aparecer na secçao do meio do amarok (é um applet, como por exemplo o  "Current trak info", ou o "Lyrics Applet")
+				 Quando uma categoria é seleccionada (apenas 1 click em cima da categoria, sem "abri-la") aparece no service-info informaçao sobre a categoria.
+				 A informaçao que aparece pode ser definida por nós, como quizermos - é codigo HTML, que pode incluir varias imagens, links, texto, fontes, enfim tudo o que pode conter uma pagina html.
+				 Como em qualquer pagina web, pode-se colocar a imagem em tamanho natural ou reduzida ou aumentada, com texto á esquerda ou á direita ou como quizermos... podem-se utilizar qualquer imagem da net, 
+				 ou qualquer imagem de categorias ou dos icones, ou do que quizermos...
+				 
+		 - ?!? Será que aparece em mais algum sitio?!? no OSD (On-Screen-Display) ou no systemTray?!?
+		   (Nao tenho aqui um KDE, para ver isso...)
+			
+			
+  A imagem do proprio script-radios-portuguesas aparece em:
+		 - no butao donde se escolhe o script, dentro do menu "Internet" 
+					A imagem neste butao aparece reduzida automaticamente (nao temos poder sobre isto) a 32x32
+	
+		 - no applet "service-info" que se pode activar para aparecer na secçao do meio do amarok (é um applet, como por exemplo o  "Current trak info", ou o "Lyrics Applet")
+				 Quando uma categoria é seleccionada (apenas 1 click em cima da categoria, sem "abri-la") aparece no service-info informaçao sobre a categoria.
+				 A informaçao que aparece pode ser definida por nós, como quizermos - é codigo HTML, que pode incluir varias imagens, links, texto, fontes, enfim tudo o que pode conter uma pagina html.
+				 Como em qualquer pagina web, pode-se colocar a imagem em tamanho natural ou reduzida ou aumentada, com texto á esquerda ou á direita ou como quizermos... podem-se utilizar qualquer imagem da net, 
+				 ou qualquer imagem de categorias ou dos icones, ou do que quizermos...
+				 
+				
+  
 
 
