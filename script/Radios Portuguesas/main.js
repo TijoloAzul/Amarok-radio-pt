@@ -128,6 +128,23 @@ function onConfigure()
 
 function onPopulating( level, callbackData, filter )
 {
+	/* Remembering:
+	Station.
+	  .stationName
+	  .stationUrl
+	  .stationHtmlDescription
+
+	Category.
+	  .categoryName
+	  .categoryImage
+	  .categoryHtmlDescription
+	  .stationsList[]
+	  .addStation (stationName, stationUrl, stationHtmlDescription)
+	  
+	RadiosCatalogue.
+	  .categoriesList
+	  .addCategory (categoryName, categoryImage )
+	*/
     if ( level == 1 ) 
     {
       /*
@@ -146,10 +163,12 @@ function onPopulating( level, callbackData, filter )
         item.infoHtml = category.categoryHtmlDescription;
         item.coverUrl = category.categoryImage;
         script.insertItem( item );
-        /*
-        Amarok.alert("category.categoryName="+category.categoryName+"\n"+
-                              "category.categoryImage="+category.categoryImage);
-        */
+        { // debugs
+		/*
+		Amarok.alert("category.categoryName="+category.categoryName+"\n"+
+				      "category.categoryImage="+category.categoryImage);
+		*/
+	}
       }
       script.donePopulating();
     }
@@ -162,23 +181,6 @@ function onPopulating( level, callbackData, filter )
       */
       var category=myRadiosCatalogue.categoriesList[callbackData];
       var stationsList = category.stationsList;
-      /* Remembering:
-        Station.
-          .stationName
-          .stationUrl
-          .stationHtmlDescription
-
-        Category.
-          .categoryName
-          .categoryImage
-          .categoryHtmlDescription
-          .stationsList[]
-          .addStation (stationName, stationUrl, stationHtmlDescription)
-          
-        RadiosCatalogue.
-          .categoriesList
-          .addCategory (categoryName, categoryImage )
-      */
       for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
       {
         var station=stationsList[sta_index];
