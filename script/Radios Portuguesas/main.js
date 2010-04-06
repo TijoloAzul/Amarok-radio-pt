@@ -5,15 +5,15 @@
 #   Many thanks to Project ROLI (http://www.radios.pt) for the great      #
 #   iniciative to broadcast portuguese small regional radios on Internet  #
 #                                                                         #
-#    ---------------------------------------------------------------------------------------  #
-#												#
-#      									#
-#
+#-----------------------------------------------------------------------  #
+#                                                 												#
+#      									                                                  #
 #                                                                         #
-#   Reused some parts of code from previous scripts made by:  #
+#                                                                         #
+#   Reused some parts of code from previous scripts made by:              #
 #                                                                         #
 #   Copyright                                                             #
-#   (C)  2010 Zipizap <zipizap123@gmail.com> #
+#   (C)  2010 Zipizap <zipizap123@gmail.com>                              #
 #   (C)  2009 Àlvar Cuevas i Fajardo <alvar@cuevas.cat>                   #
 #   (C)  2008 Eirik Johansen Bjørgan  <eirikjbj@gmail.com>                #
 #   (C)  2007, 2008 Nikolaj Hald Nielsen  <nhnFreespirit@gmail.com>       #
@@ -86,7 +86,7 @@ function RadiosCatalogue() {
         this.stationHtmlDescription = "ALSO MISSING SOME TODO HERE IN HTML " + stationHtmlDescription;
     }
     this.categoryName=categoryName;     				//text string
-    this.categoryImage = Amarok.Info.scriptPath() + "/" + categoryImage;					// filename (path relative to main.js directory )
+    this.categoryImage=((categoryImage=="")?(""):(Amarok.Info.scriptPath() + "/" + categoryImage)); //this.categoryImage = "" or filename with path relative to main.js directory
     this.categoryHtmlDescription = "TODO HERE!!!\n" + '<img src="'+this.categoryImage+'" />' + '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
     this.stationsList = [];
     this.addStation = function addStation (stationName, stationUrl, stationHtmlDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationHtmlDescription ) ); return this;}
@@ -94,7 +94,6 @@ function RadiosCatalogue() {
   this.categoriesList=[];
   this.addCategory = function addCategory( categoryName,  categoryImage) 
   { 
-    categoryImage=( (categoryImage=="") ?  ("icon_categoryDefault.png") : (categoryImage) ) ;
     var newCategory = new Category (categoryName,  categoryImage);
     this.categoriesList.push(newCategory);
     return newCategory;
@@ -103,21 +102,63 @@ function RadiosCatalogue() {
 
 myRadiosCatalogue=new RadiosCatalogue();
 
-arr=["icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
+arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
 for (var i=0; i<arr.length; i++) {
-  myRadiosCatalogue.addCategory(arr[i],  arr[i])
+  myRadiosCatalogue.addCategory(arr[i],  "Images/Categories/" + arr[i])
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
 }
 
+/*
+  Fill in like this:
+
+  myRadiosCatalogue.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
+    .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
+    .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
+    ;
+  myRadiosCatalogue.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
+    .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
+    .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
+    ;
+*/
+
 
 function Service()
 {
     //ScriptableServiceScript.call( this, "Radios Portuguesas", 2, "Escuta em directo as inumeras radios regionais portuguesas", "TODO: USE HTML HERE!!!Emissoes em directo das radios regionais portuguesas", false );
-    serviceName="Radios Portuguesas"; 
-    serviceSlogan="Escuta em directo as inumeras radios regionais portuguesas"; //small text
-    serviceHtmlDescription= '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';  //Html code wich will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
+    var serviceName="Radios Portuguesas"; 
+    var serviceSlogan="Escuta em directo as inumeras radios regionais portuguesas"; //small text
+    {// serviceHtmlDescription
+      //Defines the Html code which will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
+      /* - read from file "/AppletWebpages/Service/Service.html" into htmlCodeWithoutImages
+         - define htmlCodeOfimages
+         - insert in htmlCodeWithoutImages, after "<!-- INSERT IMAGES HERE -->", the htmlCodeOfimages
+         - define serviceHtmlDescription = htmlCodeWithoutImages
+      */
+      var theFileName=Amarok.Info.scriptPath() + "/AppletWebpages/Service/Service.html";
+      var htmlCodeWithoutImages_File=new QFile(theFileName, (QFile.IO_ReadOnly|QIODevice.Text));
+      var htmlCodeWithoutImages=
+      var serviceHtmlDescription= '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
+      { // debug
+      /*
+      theFileName="/home/paulo/test.txt";
+
+      htmlCodeWithoutImages_File=new QFile(theFileName, (theFileName.IO_ReadOnly|QIODevice.Text));
+
+      theQTextStream=new QTextStream(htmlCodeWithoutImages_File);
+
+      theQString=theQTextStream.readLine();
+
+
+      Amarok.alert(theQTextStream.readLine())
+
+      htmlCodeWithoutImages_File.close();
+      */
+      }
+      
+      var serviceHtmlDescription="SERVICE DESCRIPTION TODO!!!";
+    }
     ScriptableServiceScript.call( this, serviceName, 2, serviceSlogan, serviceHtmlDescription, false );
 }
 
@@ -128,23 +169,23 @@ function onConfigure()
 
 function onPopulating( level, callbackData, filter )
 {
-	/* Remembering:
-	Station.
-	  .stationName
-	  .stationUrl
-	  .stationHtmlDescription
+  /* Remembering:
+  Station.
+    .stationName
+    .stationUrl
+    .stationHtmlDescription
 
-	Category.
-	  .categoryName
-	  .categoryImage
-	  .categoryHtmlDescription
-	  .stationsList[]
-	  .addStation (stationName, stationUrl, stationHtmlDescription)
-	  
-	RadiosCatalogue.
-	  .categoriesList
-	  .addCategory (categoryName, categoryImage )
-	*/
+  Category.
+    .categoryName
+    .categoryImage
+    .categoryHtmlDescription
+    .stationsList[]
+    .addStation (stationName, stationUrl, stationHtmlDescription)
+    
+  RadiosCatalogue.
+    .categoriesList
+    .addCategory (categoryName, categoryImage )
+  */
     if ( level == 1 ) 
     {
       /*
@@ -161,14 +202,14 @@ function onPopulating( level, callbackData, filter )
         item.itemName = category.categoryName;
         item.playableUrl = "";
         item.infoHtml = category.categoryHtmlDescription;
-        item.coverUrl = category.categoryImage;
+        item.coverUrl = (category.categoryImage=="")?(Amarok.Info.scriptPath() + "/Images/defaults/icon_categoryDefault.png"):(category.categoryImage);
         script.insertItem( item );
         { // debugs
-		/*
-		Amarok.alert("category.categoryName="+category.categoryName+"\n"+
-				      "category.categoryImage="+category.categoryImage);
-		*/
-	}
+          /*
+          Amarok.alert("category.categoryName="+category.categoryName+"\n"+
+                    "category.categoryImage="+category.categoryImage);
+          */
+        }
       }
       script.donePopulating();
     }
@@ -192,7 +233,7 @@ function onPopulating( level, callbackData, filter )
         item.album = category.categoryName; 
         item.infoHtml = station.stationHtmlDescription;
         item.artist = "Radio-online";
-        item.coverUrl = "";
+        item.coverUrl = Amarok.Info.scriptPath() + "/Images/defaults/icon_stationDefault.png";
         script.insertItem( item );
       }
       script.donePopulating();
@@ -201,7 +242,7 @@ function onPopulating( level, callbackData, filter )
 
 function onCustomize() {
     var currentDir = Amarok.Info.scriptPath() + "/";
-    var iconPixmap = new QPixmap(currentDir+"icon_script.png");
+    var iconPixmap = new QPixmap(currentDir+"/Images/Service/serviceImage.png");
     script.setIcon(iconPixmap);
 }
 
