@@ -42,7 +42,10 @@ Importer.loadQtBinding("qt.gui");
 /*
 __Amarok service info:
 http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0
-
+http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0
+__Qt info 
+http://amarok.kde.org/qtscriptbindings/index.html
+http://doc.trolltech.com/4.6/qfile.html#details
 */
 
 /*
