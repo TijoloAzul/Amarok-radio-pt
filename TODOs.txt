@@ -2,7 +2,8 @@ Vou apontando aqui para nao ir esquecendo:
 
 
 TODOs em geral:
-
+ - na kde-apps: deixar instrucoes de como instalar o script (ou fazer um setup.sh)
+ - TSF nao funciona... arranjar isso
 
 TODOs Imagens:
  - Converter imagens .ai (PDF)  e .eps (PostScript) para um formato de imagem (bmp, giff, jpg, png)
@@ -31,7 +32,7 @@ TODOs main.js e javascripts:
       
       
   A imagem de uma categoria vai ser utilizada/mostrada em:
-     - no menu-do-script, aquele que aparece no amarok mais á esqueda - a imagem representa a categoria e aparece com tamanho de 30X30 (ou 32x32, nao tenho a certeza), á esqueda do nome da categoria
+     - no menu-do-script, aquele que aparece no amarok mais á esquerda - a imagem representa a categoria e aparece com tamanho de 30X30 (ou 32x32, nao tenho a certeza), á esqueda do nome da categoria
          Neste caso, a imagem seja de que tamanho for, vai ser reduzida automaticamente pelo Amarok (nao temos poder sobre isto) e fica do tamanho de 30x30.
          Podemos especificar qual o ficheiro de imagem que queremos utilizar para isto - note-se que o ficheiro de imagem pode ser algo de 30x30 feito á medida, ou pode ser uma imagem 
          grande que o Amarok automaticamente reduz a 30x30.
@@ -57,8 +58,38 @@ TODOs main.js e javascripts:
          A informaçao que aparece pode ser definida por nós, como quizermos - é codigo HTML, que pode incluir varias imagens, links, texto, fontes, enfim tudo o que pode conter uma pagina html.
          Como em qualquer pagina web, pode-se colocar a imagem em tamanho natural ou reduzida ou aumentada, com texto á esquerda ou á direita ou como quizermos... podem-se utilizar qualquer imagem da net, 
          ou qualquer imagem de categorias ou dos icones, ou do que quizermos...
+
+  UPDATE: parece que no novo amarok (v2.3.0 pelo menos), existe um PHOTO-APPLET além do INFO-APPLET
+     -TODO: investigar se INFO-APPLET é igual ao anterior SERVICE-APPLET 
+     -TODO: investigar o PHOTO-APPLET
          
-        
+         
+Estrutura ficheiros prevista:
+
+  Radios Portuguesas/
+  +-- Defaults/
+  ¦   +-- Category_icon.png                               (if not existing, should default to Category_image.png)
+  ¦   +-- Category_image.png                              (for INFO-APPLET or PHOTOS-APPLET )
+  ¦   +-- Category_info.html                              (for INFO-APPLET, html code)
+  +-- CategoryName/
+  ¦   +-- Category_data.json                               
+  ¦   +-- Category_icon.png                               (if not existing, should default to Category_image.png)
+  ¦   +-- Category_image.png                              (for INFO-APPLET or PHOTOS-APPLET )
+  ¦   +-- Category_info.html                              (for INFO-APPLET, html code)
+  ¦   +-- TrackName/
+  ¦   ¦   +-- Track_data.json
+  ¦   ¦ ...
+  ¦   +-- TrackName/
+  ¦       +-- Track_data.json
+  ¦   
+  +-- main.js
+  +-- script.spec
+  +-- RadioService_data.json
+  +-- RadioService_icon.png                                   
+  +-- RadioService_image.png                                   
+  +-- RadioService_info.html                                   
+
+
   
 
 

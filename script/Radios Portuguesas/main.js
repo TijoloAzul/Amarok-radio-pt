@@ -62,25 +62,19 @@ Category.
   .stationsList[]
   .addStation (stationName, stationUrl, stationHtmlDescription)
 
-  
-RadiosCatalogue.
+RadioService.
+  .serviceName
+  .serviceSlogan
+  .serviceHtmlDescription
   .categoriesList
   .addCategory (categoryName, categoryImage )
 
----------------------- old objects
-categories.
-  ."categ1-name"[]
-    [x] = station
-  ."categ2-name"[]
-    [x] = station
-    
-images.
-  ."categ1-name" = "categ1-image.gif"
-  ."categ2-name" = "categ2-image.gif"
-  
 */
 
-function RadiosCatalogue() {
+function RadioService(serviceName,serviceSlogan,serviceHtmlDescription) {
+  this.serviceName = serviceName;                //ex: "Radios Portuguesas"
+  this.serviceSlogan = serviceSlogan;            //ex: "Escuta em directo as inumeras radios regionais portuguesas"
+  this.serviceHtmlDescription = serviceHtmlDescription;
   function Category (categoryName,  categoryImage){
     function Station (stationName, stationUrl, stationHtmlDescription)
     {
@@ -103,11 +97,16 @@ function RadiosCatalogue() {
   }
 }
 
-myRadiosCatalogue=new RadiosCatalogue();
+/* TODO!!!
+var serviceName                 = //TODO: read from "RadioService_data.json"
+var serviceSlogan               = //TODO: read from "RadioService_data.json"
+var serviceHtmlDescription      = //TODO: read from "RadioService_info.html"
+var myRadioService=new RadioService(serviceName,serviceSlogan,serviceHtmlDescription);
+*/
 
 arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
 for (var i=0; i<arr.length; i++) {
-  myRadiosCatalogue.addCategory(arr[i],  "Images/Categories/" + arr[i])
+  myRadioService.addCategory(arr[i],  "Images/Categories/" + arr[i])
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
@@ -116,58 +115,60 @@ for (var i=0; i<arr.length; i++) {
 /*
   Fill in like this:
 
-  myRadiosCatalogue.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
+  myRadioService.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
-  myRadiosCatalogue.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
+  myRadioService.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
 */
 
+{ // Debugs info about files in QT... to give inspiration...
+    // {// serviceHtmlDescription
+      //Defines the Html code which will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
+      // /* - read from file "/AppletWebpages/Service/Service.html" into htmlCodeWithoutImages
+         // - define htmlCodeOfimages
+         // - insert in htmlCodeWithoutImages, after "<!-- INSERT IMAGES HERE -->", the htmlCodeOfimages
+         // - define serviceHtmlDescription = htmlCodeWithoutImages
+      // */
+      // var theFileName=Amarok.Info.scriptPath() + "/AppletWebpages/Service/Service.html";
+      // var htmlCodeWithoutImages_File=new QFile(theFileName, (QFile.IO_ReadOnly|QIODevice.Text));
+      // var htmlCodeWithoutImages=
+      // var serviceHtmlDescription= '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
+      // { // debug
+      // /*
+      // theFileName="/home/paulo/test.txt";
+
+      // htmlCodeWithoutImages_File=new QFile(theFileName, (theFileName.IO_ReadOnly|QIODevice.Text));
+
+      // theQTextStream=new QTextStream(htmlCodeWithoutImages_File);
+
+      // theQString=theQTextStream.readLine();
+
+
+      // Amarok.alert(theQTextStream.readLine())
+
+      // htmlCodeWithoutImages_File.close();
+      // */
+      // }
+
+    // }
+}
+
 
 function Service()
 {
-    //ScriptableServiceScript.call( this, "Radios Portuguesas", 2, "Escuta em directo as inumeras radios regionais portuguesas", "TODO: USE HTML HERE!!!Emissoes em directo das radios regionais portuguesas", false );
-    var serviceName="Radios Portuguesas"; 
-    var serviceSlogan="Escuta em directo as inumeras radios regionais portuguesas"; //small text
-    {// serviceHtmlDescription
-      //Defines the Html code which will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
-      /* - read from file "/AppletWebpages/Service/Service.html" into htmlCodeWithoutImages
-         - define htmlCodeOfimages
-         - insert in htmlCodeWithoutImages, after "<!-- INSERT IMAGES HERE -->", the htmlCodeOfimages
-         - define serviceHtmlDescription = htmlCodeWithoutImages
-      */
-      var theFileName=Amarok.Info.scriptPath() + "/AppletWebpages/Service/Service.html";
-      var htmlCodeWithoutImages_File=new QFile(theFileName, (QFile.IO_ReadOnly|QIODevice.Text));
-      var htmlCodeWithoutImages=
-      var serviceHtmlDescription= '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
-      { // debug
-      /*
-      theFileName="/home/paulo/test.txt";
-
-      htmlCodeWithoutImages_File=new QFile(theFileName, (theFileName.IO_ReadOnly|QIODevice.Text));
-
-      theQTextStream=new QTextStream(htmlCodeWithoutImages_File);
-
-      theQString=theQTextStream.readLine();
-
-
-      Amarok.alert(theQTextStream.readLine())
-
-      htmlCodeWithoutImages_File.close();
-      */
-      }
-      
-      var serviceHtmlDescription="SERVICE DESCRIPTION TODO!!!";
-    }
+    var serviceName=myRadioService.serviceName; 
+    var serviceSlogan=myRadioService.serviceSlogan; 
+    var serviceHtmlDescription=myRadioService.serviceHtmlDescription; 
     ScriptableServiceScript.call( this, serviceName, 2, serviceSlogan, serviceHtmlDescription, false );
 }
 
 function onConfigure()
 {
-    Amarok.alert( "Este script nao necessita de configuraçao" );
+    Amarok.alert( "Este script nao necessita de configuraçao" ); // "This script does not need configuration"
 }
 
 function onPopulating( level, callbackData, filter )
@@ -185,7 +186,10 @@ function onPopulating( level, callbackData, filter )
     .stationsList[]
     .addStation (stationName, stationUrl, stationHtmlDescription)
     
-  RadiosCatalogue.
+  RadioService.
+    .serviceName
+    .serviceSlogan
+    .serviceHtmlDescription
     .categoriesList
     .addCategory (categoryName, categoryImage )
   */
@@ -196,15 +200,16 @@ function onPopulating( level, callbackData, filter )
         callbackData = ""
         filter = completely ignored
       */		
-      for( var cat_index=0; cat_index < myRadiosCatalogue.categoriesList.length; cat_index++)
+      for( var cat_index=0; cat_index < myRadioService.categoriesList.length; cat_index++)
       {
-        var category=myRadiosCatalogue.categoriesList[cat_index];
+        var category=myRadioService.categoriesList[cat_index];
         item = Amarok.StreamItem;
         item.level = 1;
         item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object or function!!!
         item.itemName = category.categoryName;
-        item.playableUrl = "";
+        item.playableUrl = "";                 //It is a category, so it will not play any URL by itself (Stations have a playable url, not categories)
         item.infoHtml = category.categoryHtmlDescription;
+        //TODO: check next line...
         item.coverUrl = (category.categoryImage=="")?(Amarok.Info.scriptPath() + "/Images/defaults/icon_categoryDefault.png"):(category.categoryImage);
         script.insertItem( item );
         { // debugs
@@ -220,10 +225,10 @@ function onPopulating( level, callbackData, filter )
     {
       /*
         level =0
-        callbackData = index of the selected category within the array myRadiosCatalogue.categoriesList[]
+        callbackData = index of the selected category within the array myRadioService.categoriesList[]
         filter = completely ignored
       */
-      var category=myRadiosCatalogue.categoriesList[callbackData];
+      var category=myRadioService.categoriesList[callbackData];
       var stationsList = category.stationsList;
       for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
       {
@@ -236,6 +241,7 @@ function onPopulating( level, callbackData, filter )
         item.album = category.categoryName; 
         item.infoHtml = station.stationHtmlDescription;
         item.artist = "Radio-online";
+        //TODO: check next line
         item.coverUrl = Amarok.Info.scriptPath() + "/Images/defaults/icon_stationDefault.png";
         script.insertItem( item );
       }
@@ -245,7 +251,7 @@ function onPopulating( level, callbackData, filter )
 
 function onCustomize() {
     var currentDir = Amarok.Info.scriptPath() + "/";
-    var iconPixmap = new QPixmap(currentDir+"/Images/Service/serviceImage.png");
+    var iconPixmap = new QPixmap(currentDir+"/RadioService_image.png");
     script.setIcon(iconPixmap);
 }
 
