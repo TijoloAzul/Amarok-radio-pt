@@ -5,6 +5,8 @@
 #   Many thanks to Project ROLI (http://www.radios.pt) for the great      #
 #   iniciative to broadcast portuguese small regional radios on Internet  #
 #                                                                         #
+#                                                                         #
+#                                                                         #
 #-----------------------------------------------------------------------  #
 #                                                 												#
 #      									                                                  #
@@ -39,6 +41,7 @@
 Importer.loadQtBinding("qt.core");
 Importer.loadQtBinding("qt.gui");
 
+
 /*
 __Amarok service info:
 http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0
@@ -66,15 +69,17 @@ RadioService.
   .serviceName
   .serviceSlogan
   .serviceHtmlDescription
+  .serviceNoConfigMessage
   .categoriesList
   .addCategory (categoryName, categoryImage )
 
 */
 
-function RadioService(serviceName,serviceSlogan,serviceHtmlDescription) {
-  this.serviceName = serviceName;                //ex: "Radios Portuguesas"
-  this.serviceSlogan = serviceSlogan;            //ex: "Escuta em directo as inumeras radios regionais portuguesas"
-  this.serviceHtmlDescription = serviceHtmlDescription;
+function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceNoConfigMessage) {
+  this.serviceName = serviceName;                         //ex: "Radios Portuguesas"
+  this.serviceSlogan = serviceSlogan;                     //ex: "Escuta em directo as inumeras radios regionais portuguesas"
+  this.serviceHtmlDescription = serviceHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
+  this.serviceNoConfigMessage = serviceNoConfigMessage;   //ex: "Este script nao necessita de configuraçao"
   function Category (categoryName,  categoryImage){
     function Station (stationName, stationUrl, stationHtmlDescription)
     {
@@ -98,10 +103,17 @@ function RadioService(serviceName,serviceSlogan,serviceHtmlDescription) {
 }
 
 /* TODO!!!
-var serviceName                 = //TODO: read from "RadioService_data.json"
-var serviceSlogan               = //TODO: read from "RadioService_data.json"
-var serviceHtmlDescription      = //TODO: read from "RadioService_info.html"
-var myRadioService=new RadioService(serviceName,serviceSlogan,serviceHtmlDescription);
+Examples:
+  var serviceName                 = "Radios Portuguesas";
+  var serviceSlogan               = "Escuta em directo as inumeras radios regionais portuguesas";
+  var serviceHtmlDescription      = '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
+  var serviceNoConfigMessage      = "Este script nao necessita de configuraçao";
+
+var serviceName                 = //TODO: read from "RadioService.RadioServiceName.data.json"
+var serviceSlogan               = //TODO: read from "RadioService.RadioServiceName.data.json"
+var serviceHtmlDescription      = //TODO: read from "RadioService.RadioServiceName.info.html"
+var serviceNoConfigMessage      = //TODO: read from "RadioService.RadioServiceName.data.json"
+var myRadioService=new RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceNoConfigMessage);
 */
 
 arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
@@ -126,6 +138,17 @@ for (var i=0; i<arr.length; i++) {
 */
 
 { // Debugs info about files in QT... to give inspiration...
+    /*
+      //http://amarok.kde.org/qtscriptbindings/qxmlsimplereader.html
+      //http://doc.trolltech.com/4.4/xml-tools.html
+      //http://qtwiki.org/Parsing_JSON_with_QT_using_standard_QT_library
+      //
+    Importer.loadQtBinding("qt.xml")
+    //var jtxt='[0,1,2,3]';
+    //Amarok.alert(jtxt)
+    
+    */
+    
     // {// serviceHtmlDescription
       //Defines the Html code which will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
       // /* - read from file "/AppletWebpages/Service/Service.html" into htmlCodeWithoutImages
@@ -168,7 +191,7 @@ function Service()
 
 function onConfigure()
 {
-    Amarok.alert( "Este script nao necessita de configuraçao" ); // "This script does not need configuration"
+    Amarok.alert( myRadioService.serviceNoConfigMessage ); // "This script does not need configuration"
 }
 
 function onPopulating( level, callbackData, filter )
@@ -190,8 +213,10 @@ function onPopulating( level, callbackData, filter )
     .serviceName
     .serviceSlogan
     .serviceHtmlDescription
+    .serviceNoConfigMessage
     .categoriesList
     .addCategory (categoryName, categoryImage )
+
   */
     if ( level == 1 ) 
     {
@@ -207,7 +232,7 @@ function onPopulating( level, callbackData, filter )
         item.level = 1;
         item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object or function!!!
         item.itemName = category.categoryName;
-        item.playableUrl = "";                 //It is a category, so it will not play any URL by itself (Stations have a playable url, not categories)
+        item.playableUrl = "";                 //It is a category, so it will not play any URL by itself (Stations have a playable url, but not categories)
         item.infoHtml = category.categoryHtmlDescription;
         //TODO: check next line...
         item.coverUrl = (category.categoryImage=="")?(Amarok.Info.scriptPath() + "/Images/defaults/icon_categoryDefault.png"):(category.categoryImage);
@@ -250,6 +275,7 @@ function onPopulating( level, callbackData, filter )
 }
 
 function onCustomize() {
+    //TODO: check next lines...
     var currentDir = Amarok.Info.scriptPath() + "/";
     var iconPixmap = new QPixmap(currentDir+"/RadioService_image.png");
     script.setIcon(iconPixmap);

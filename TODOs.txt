@@ -4,6 +4,7 @@ Vou apontando aqui para nao ir esquecendo:
 TODOs em geral:
  - na kde-apps: deixar instrucoes de como instalar o script (ou fazer um setup.sh)
  - TSF nao funciona... arranjar isso
+ - verificar a codificaçao dos nomes das radios... aparecem um pouco mal no Amarok...
 
 TODOs Imagens:
  - Converter imagens .ai (PDF)  e .eps (PostScript) para um formato de imagem (bmp, giff, jpg, png)
@@ -66,30 +67,29 @@ TODOs main.js e javascripts:
          
 Estrutura ficheiros prevista:
 
-  Radios Portuguesas/
+  RadioServiceName/
   +-- Defaults/
-  ¦   +-- Category_icon.png                               (if not existing, should default to Category_image.png)
-  ¦   +-- Category_image.png                              (for INFO-APPLET or PHOTOS-APPLET )
-  ¦   +-- Category_info.html                              (for INFO-APPLET, html code)
+  ¦   +-- Category.default.image.png                              (for INFO-APPLET or PHOTOS-APPLET )
+  ¦   +-- Category.default.info.html                              (for INFO-APPLET, html code)
   +-- CategoryName/
-  ¦   +-- Category_data.json                               
-  ¦   +-- Category_icon.png                               (if not existing, should default to Category_image.png)
-  ¦   +-- Category_image.png                              (for INFO-APPLET or PHOTOS-APPLET )
-  ¦   +-- Category_info.html                              (for INFO-APPLET, html code)
-  ¦   +-- TrackName/
-  ¦   ¦   +-- Track_data.json
-  ¦   ¦ ...
-  ¦   +-- TrackName/
-  ¦       +-- Track_data.json
+  ¦   +-- Category.CategoryName.data.json                               
+  ¦   +-- Category.CategoryName.image.png                              (for INFO-APPLET or PHOTOS-APPLET. Also for the icon (image automatically reduced to 32x32))
+  ¦   +-- Category.CategoryName.info.html                              (for INFO-APPLET, html code)
+  ¦   +-- Track.TrackName.data.json
+  ¦   +-- ...
+  ¦   +-- Track.TrackName.data.json
+  ¦   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
+  ¦       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category root dir)
   ¦   
   +-- main.js
   +-- script.spec
-  +-- RadioService_data.json
-  +-- RadioService_icon.png                                   
-  +-- RadioService_image.png                                   
-  +-- RadioService_info.html                                   
+  +-- RadioService.RadioServiceName.data.json
+  +-- RadioService.RadioServiceName.image.png                     (for INFO-APPLET or PHOTOS-APPLET. Also for the icon (image automatically reduced to 32x32))              
+  +-- RadioService.RadioServiceName.info.html                                   
 
-
-  
+    where:
+        RadioServiceName = "Radios Portuguesas"
+        CategoryName     = "Açores"
+        TrackName        = "Rádio Antena Nove"
 
 
