@@ -47,7 +47,7 @@ TODOs main.js e javascripts:
          ou qualquer imagem de categorias ou dos icones, ou do que quizermos...
          
      - ?!? Será que aparece em mais algum sitio?!? no OSD (On-Screen-Display) ou no systemTray?!?
-       (Nao tenho aqui um KDE, para ver isso...)
+       Sim, pode aparecer em ambos. Eu agora não uso KDE, mas no gnome aparece no OSD, para além do OSD do Amarok. E o SystemTray também o apresenta, quando se passa o rato por cima (dependendo do sistema) e o novo sound-menu do Ubuntu (não sei se é específico do Gnome ou do Ubuntu.
       
       
   A imagem do proprio script-radios-portuguesas aparece em:
