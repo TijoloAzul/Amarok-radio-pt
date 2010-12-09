@@ -157,7 +157,6 @@ for (var i=0; i<arr.length; i++) {
 
 
 
-//Create a file in /tmp/tmp.js
 Importer.loadQtBinding("qt.core");
 var tmpFile = new QFile("/tmp/tmp.js");
 tmpFile.open(QIODevice.ReadOnly); 
