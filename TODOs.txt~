@@ -5,6 +5,7 @@ TODOs em geral:
  - na kde-apps: deixar instrucoes de como instalar o script (ou fazer um setup.sh)
  - TSF nao funciona... arranjar isso
  - verificar a codificaçao dos nomes das radios... aparecem um pouco mal no Amarok...
+ - escrever comentarios nos ficheiros, para que sejam gravados todos em UTF8 (senao Amarok pode le-los mal...)
 
 TODOs Imagens:
  - Converter imagens .ai (PDF)  e .eps (PostScript) para um formato de imagem (bmp, giff, jpg, png)

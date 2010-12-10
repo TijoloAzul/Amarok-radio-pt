@@ -42,29 +42,123 @@ Importer.loadQtBinding("qt.core");
 Importer.loadQtBinding("qt.gui");
 
 
-/*
-__Amarok service info:
-http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0
-http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0
-__Qt info 
-http://amarok.kde.org/qtscriptbindings/index.html
-http://doc.trolltech.com/4.6/qfile.html#details
+/* Usefull references about Amarok Services, Qt, QtScripts, Javascript, ...
+  
+  __Amarok Service info
+  http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0
+  http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0 (outdated)
+
+  __Qts
+  http://pepper.troll.no/s60prereleases/doc/qtscript.html
+  http://doc.trolltech.com/4.6/qfile.html#details
+
+  __QtScripts
+  http://amarok.kde.org/qtscriptbindings/index.html
+  http://amarok.kde.org/qtscriptbindings/qxmlsimplereader.html
+    
+  __Javascripts
+  http://www.explainth.at/downloads/jsquick.pdf
+
 */
 
-/*
--------------------- new objects
-Station.
-  .stationName
-  .stationUrl
-  .stationHtmlDescription						// can be html code!
 
-Category.
-  .categoryName
-  .categoryImage
-  .categoryHtmlDescription
-  .stationsList[]
-  .addStation (stationName, stationUrl, stationHtmlDescription)
 
+/* --- function ReadTextFile(file)
+  Arguments:
+    file (String)
+      The full filename of a text file
+      Ex: "/tmp/tmp.txt"
+  
+  Returns:
+    text_from_file (String)
+      A String containing the full text read from the file
+      The String may have severall lines (Javascript supports multiline strings)
+  
+  Usage:
+    var txt = ReadTextFile("/tmp/myfile.txt");
+
+  
+  NOTE1: "Importing" code from .js files  
+    If you want to "import" the code of a javascript file into the program, you can:
+        eval(ReadTextFile("MyJavascriptFileWithCode.js"))
+    And the javascript code within the file will be evaluated in the actual context.
+    The "import" uses <<eval>> which works but is not a good practice, so be aware of what 
+    code you "import", you don't want to import any errors :)
+  
+  NOTE2: "Importing" data from .json files
+    In a similar way, we can "import" data from a JSON file into an object:
+       eval("var JSON_obj="+ReadTextFile("MyJsonFileWithData.json")
+       //Now the JSON_obj variable will contain the data read from the JSON filename.
+       //You can use JSON_obj to to access the data of the .json file
+       Object.keys(JSON_obj)    //this will show the name of the properties of the JSON_obj
+       JSON_obj.someproperty    //this will read the value of the propertie named "someproperty"
+      
+   This form of "importing" a .json file, also uses <<eval>> and although it works, it's not a good practice
+   So be carefull with what you import :)
+    
+*/
+function  ReadTextFile(file) {
+  var tmpFile = new QFile(file);
+  tmpFile.open(QIODevice.ReadOnly); 
+  var tmpTxtStr = new QTextStream(tmpFile);
+  var text_from_file = tmpTxtStr.readAll();
+  tmpFile.close();
+  return text_from_file;
+  /* to debug the returned results, use:
+    //Create a file in /tmp/tmp.txt
+    Amarok.alert(ReadTextFile("/tmp/tmp.txt")
+  */
+}
+
+/* --- function ImportJsonFile(json_file)
+  Arguments:
+    json_file (String)
+      The full filename of a json file
+      Ex: "/tmp/tmp.json"
+  
+  Returns:
+    (Object) 
+      An Object containing the content read from the json_file
+  
+  Usage:
+    var my_JSON_obj = ImportJsonFile("/tmp/myJsonFile.json");
+  
+  NOTE: About the "import" method
+    See the notes of the function ReadTextFile - the method used involves <<eval>>, so be 
+    carefull not to "import" errors that will make the entire script fail.
+*/
+function ImportJsonFile(json_file) {
+  eval("var JSON_obj = " + ReadTextFile(json_file));
+  return JSON_obj;
+  /* to debug the returned results, use:
+    //Create a file in /tmp/tmp.json
+    var JSON_obj = ImportJsonFile("/tmp/tmp.json");
+    Object.keys(JSON_obj);
+  */
+}
+
+/* --- function ScriptBaseDir()
+  Arguments:
+    None
+
+  Returns:
+    ScriptFullPath (String)
+      A String with the full-path to the current location of this Service Script
+      There is *no* trailing-slash.
+      Ex: "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas"
+  
+  Usage:
+    var my_JSON_obj = ImportJsonFile("/tmp/myJsonFile.json");
+  
+*/
+function ScriptBaseDir() {  
+  var ScriptFullPath = Amarok.Info.scriptPath();
+  return ScriptFullPath;
+}
+
+
+
+/* Resume of RadioService object
 RadioService.
   .serviceName
   .serviceSlogan
@@ -74,14 +168,26 @@ RadioService.
   .categoriesList
   .addCategory (categoryName, categoryImage )
 
-*/
+  Category.
+    .categoryName
+    .categoryImage
+    .categoryHtmlDescription
+    .stationsList[]
+    .addStation (stationName, stationUrl, stationHtmlDescription)
 
+    Station.
+      .stationName
+      .stationUrl
+      .stationHtmlDescription            // can be html code!
+
+*/
+//TODO: check and cleanup the following object's code
 function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImage,serviceNoConfigMessage) {
   this.serviceName = serviceName;                         //ex: "Radios Portuguesas"
   this.serviceSlogan = serviceSlogan;                     //ex: "Escuta em directo as inumeras radios regionais portuguesas"
   this.serviceHtmlDescription = serviceHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
   this.serviceImageFullPath = 
-    Amarok.Info.scriptPath() + "/" + serviceImage;        //ex: "/xxx/.../xxx/RadioService.image.png"
+    ScriptBaseDir() + "/" + serviceImage;                 //ex: "/xxx/.../xxx/RadioService.image.png"
   this.serviceNoConfigMessage = serviceNoConfigMessage;   //ex: "Este script nao necessita de configuraçao"
   function Category (categoryName,  categoryImage){
     function Station (stationName, stationUrl, stationHtmlDescription)
@@ -90,7 +196,7 @@ function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceIm
         this.stationUrl = stationUrl
         this.stationHtmlDescription = "ALSO MISSING SOME TODO HERE IN HTML " + stationHtmlDescription;
     }
-    this.categoryName=categoryName;     				//text string
+    this.categoryName=categoryName;             //text string
     this.categoryImage=((categoryImage=="")?(""):(Amarok.Info.scriptPath() + "/" + categoryImage)); //this.categoryImage = "" or filename with path relative to main.js directory
     this.categoryHtmlDescription = "TODO HERE!!!\n" + '<img src="'+this.categoryImage+'" />' + '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
     this.stationsList = [];
@@ -142,67 +248,11 @@ for (var i=0; i<arr.length; i++) {
     ;
 */
 
-{ // Debugs info about files in QT... to give inspiration...
-    /*
-      //---Qts
-      //http://doc.trolltech.com/4.4/xml-tools.html
-      //http://qtwiki.org/Parsing_JSON_with_QT_using_standard_QT_library
 
-      //---QtScripts
-      //http://amarok.kde.org/qtscriptbindings/index.html
-      //http://amarok.kde.org/qtscriptbindings/qxmlsimplereader.html
-    
-      //---Javascripts
-      //http://www.explainth.at/downloads/jsquick.pdf
-
-
-
-//Create a file in /tmp/tmp.js
-Importer.loadQtBinding("qt.core");
-var tmpFile = new QFile("/tmp/tmp.js");
-tmpFile.open(QIODevice.ReadOnly); 
-var tmpTxtStr = new QTextStream(tmpFile);
-var text = tmpTxtStr.readAll();
-Amarok.alert(text);
-tmpFile.close()
-//Evaluate it in current context
-eval(text)
-sss
-
-
-
-    */
-    
-    // {// serviceHtmlDescription
-      //Defines the Html code which will appear in the service-info applet (if the user activates it), in the context view (center view of amarok)
-      // /* - read from file "/AppletWebpages/Service/Service.html" into htmlCodeWithoutImages
-         // - define htmlCodeOfimages
-         // - insert in htmlCodeWithoutImages, after "<!-- INSERT IMAGES HERE -->", the htmlCodeOfimages
-         // - define serviceHtmlDescription = htmlCodeWithoutImages
-      // */
-      // var theFileName=Amarok.Info.scriptPath() + "/AppletWebpages/Service/Service.html";
-      // var htmlCodeWithoutImages_File=new QFile(theFileName, (QFile.IO_ReadOnly|QIODevice.Text));
-      // var htmlCodeWithoutImages=
-      // var serviceHtmlDescription= '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
-      // { // debug
-      // /*
-      // theFileName="/home/paulo/test.txt";
-
-      // htmlCodeWithoutImages_File=new QFile(theFileName, (theFileName.IO_ReadOnly|QIODevice.Text));
-
-      // theQTextStream=new QTextStream(htmlCodeWithoutImages_File);
-
-      // theQString=theQTextStream.readLine();
-
-
-      // Amarok.alert(theQTextStream.readLine())
-
-      // htmlCodeWithoutImages_File.close();
-      // */
-      // }
-
-    // }
-}
+//-------------------------------------------------------------------------------------------
+// The remaining lines have automatic code, that will simply use the variable: myRadioService
+// So you should not change them (unless you want to improve all this code :) )
+//-------------------------------------------------------------------------------------------
 
 
 function Service()
@@ -248,7 +298,7 @@ function onPopulating( level, callbackData, filter )
         level = 1
         callbackData = ""
         filter = completely ignored
-      */		
+      */    
       for( var cat_index=0; cat_index < myRadioService.categoriesList.length; cat_index++)
       {
         var category=myRadioService.categoriesList[cat_index];

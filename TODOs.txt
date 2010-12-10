@@ -73,7 +73,7 @@ Estrutura ficheiros prevista:
   +-- Defaults/
   І   +-- Category.default.image.png                              (for INFO-APPLET or PHOTOS-APPLET )
   І   +-- Category.default.info.html                              (for INFO-APPLET, html code)
-  +-- CategoryName/
+  +-- Category.CategoryName/
   І   +-- Category.CategoryName.data.json                               
   І   +-- Category.CategoryName.image.png                              (for INFO-APPLET or PHOTOS-APPLET. Also for the icon (image automatically reduced to 32x32))
   І   +-- Category.CategoryName.info.html                              (for INFO-APPLET, html code)
