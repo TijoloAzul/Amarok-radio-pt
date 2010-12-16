@@ -1,6 +1,6 @@
 /*#########################################################################
 #                                                                         #
-#   In case of any sugestion, please contact: zipizap123 @ gmail.com      #
+#   In case of any sugestion, please contact: zipizap123 (at) gmail.com   #
 #                                                                         #
 #   Many thanks to Project ROLI (http://www.radios.pt) for the great      #
 #   iniciative to broadcast portuguese small regional radios on Internet  #
@@ -56,7 +56,8 @@ Importer.loadQtBinding("qt.gui");
   http://amarok.kde.org/qtscriptbindings/index.html
   http://amarok.kde.org/qtscriptbindings/qxmlsimplereader.html
     
-  __Javascripts
+  __Javascripts (QtScript uses Javascript 1-5)
+  https://developer.mozilla.org/en/JavaScript/Reference
   http://www.explainth.at/downloads/jsquick.pdf
 
 */
@@ -97,7 +98,8 @@ Importer.loadQtBinding("qt.gui");
    So be carefull with what you import :)
     
 */
-function  ReadTextFile(file) {
+function ReadTextFile(file) {
+  Importer.loadQtBinding("qt.core");
   var tmpFile = new QFile(file);
   tmpFile.open(QIODevice.ReadOnly); 
   var tmpTxtStr = new QTextStream(tmpFile);
@@ -148,7 +150,8 @@ function ImportJsonFile(json_file) {
       Ex: "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas"
   
   Usage:
-    var my_JSON_obj = ImportJsonFile("/tmp/myJsonFile.json");
+    var the_dir = ScriptBaseDir();
+    >> the_dir = "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas"
   
 */
 function ScriptBaseDir() {  
@@ -156,6 +159,107 @@ function ScriptBaseDir() {
   return ScriptFullPath;
 }
 
+/* --- function ListDirectories(fullPath,patternFilter)
+  Arguments:
+    fullPath (String)
+      A String indicating a full-path, from where the directories will be listed
+
+    patternFilter (String)
+      A pattern used to filter the returned results.
+      Typical shell wildcards as '*' and '?' can be used
+      To return all the results, use as patternFilter "*"
+      Ex: "Category*" , "The ? number"
+      
+  Returns:
+    arr_directoriesFullPath (Array of Strings)
+      An Array of String(s) with the full-path of each directory present inside the fullPath. Symbolic links to directories are also returned.
+      There is *no* trailing-slash returned in the arr_directoriesFullPath
+      Ex: [ "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/.", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/..", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Castelo Branco", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Porto", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Defaults" ]
+  
+  
+  
+  Example:
+    var arr_directoriesFullPath = ListDirectories(ScriptBaseDir(),"*");
+    >> arr_directoriesFullPath =
+          [ "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/.", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/..", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Castelo Branco", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Porto", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Defaults" ]
+    
+  
+*/
+function ListDirectories(fullPath,patternFilter) {
+  Importer.loadQtBinding("qt.core");
+  var arr_directoriesFullPath = []
+  var qd_base = new QDir(fullPath);
+  qd_base.setFilter(QDir.Dirs);
+  var arr_dirs = qd_base.entryList([patternFilter]);
+    for (index in arr_dirs) {arr_directoriesFullPath[index] = qd_base.absoluteFilePath(arr_dirs[index])}
+    //arr_directoriesFullPath is now filled
+  return arr_directoriesFullPath;
+  /* to debug the returned results, use:
+    var arr = ListDirectories("/home/paulo/tmp","*link*")
+    for (i in arr) {Amarok.alert(arr[i])}
+  */
+}
+
+/* --- function ListFiles(fullPath,patternFilter)
+  Arguments:
+    fullPath (String)
+      A String indicating a full-path, from where the directories will be listed
+
+    patternFilter (String)
+      A pattern used to filter the returned results.
+      Typical shell wildcards as '*' and '?' can be used
+      To return all the results, use as patternFilter "*"
+      Ex: "Category.*.data.json" , "Track.*.data.json"
+      
+  Returns:
+    arr_filesFullPath (Array of Strings)
+      An Array of String(s) with the full-path of each file present inside the fullPath. Symbolic links to files are also returned.
+      There is *no* trailing-slash returned in the arr_filesFullPath
+      Ex: [ "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/main.js",
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/script.spec",
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/RadioService.data.json", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/RadioService.image.png",
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/RadioService.info.html" ]
+  
+  Example:
+    var arr_filesFullPath = ListFiles("/tmp","*");
+    >> arr_filesFullPath = 
+          [ "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/main.js",
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/script.spec",
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/RadioService.data.json", 
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/RadioService.image.png",
+            "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/RadioService.info.html" ]
+  
+*/
+function ListFiles(fullPath,patternFilter) {
+  Importer.loadQtBinding("qt.core");
+  var arr_filesFullPath = []
+  var qd_base = new QDir(fullPath);
+  qd_base.setFilter(QDir.Files);
+  var arr_files = qd_base.entryList([patternFilter]);
+    for (index in arr_files) {arr_filesFullPath[index] = qd_base.absoluteFilePath(arr_files[index])}
+    //arr_filesFullPath is now filled
+  return arr_filesFullPath;
+  /* to debug the returned results, use:
+    var arr = ListFiles("/home/paulo/tmp","*link*")
+    for (i in arr) {Amarok.alert(arr[i])}
+  */
+}
+
+
+
+/* code test-box
+
+
+*/
 
 
 /* Resume of RadioService object
@@ -166,11 +270,11 @@ RadioService.
   .serviceImageFullPath
   .serviceNoConfigMessage
   .categoriesList
-  .addCategory (categoryName, categoryImage )
+  .addCategory (categoryName, categoryImageFileFullPath, categoryHtmlDescription)
 
   Category.
     .categoryName
-    .categoryImage
+    .categoryImageFileFullPath
     .categoryHtmlDescription
     .stationsList[]
     .addStation (stationName, stationUrl, stationHtmlDescription)
@@ -182,30 +286,29 @@ RadioService.
 
 */
 //TODO: check and cleanup the following object's code
-function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImage,serviceNoConfigMessage) {
+function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImageFileFullPath,serviceNoConfigMessage) {
   this.serviceName = serviceName;                         //ex: "Radios Portuguesas"
   this.serviceSlogan = serviceSlogan;                     //ex: "Escuta em directo as inumeras radios regionais portuguesas"
   this.serviceHtmlDescription = serviceHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
-  this.serviceImageFullPath = 
-    ScriptBaseDir() + "/" + serviceImage;                 //ex: "/xxx/.../xxx/RadioService.image.png"
+  this.serviceImageFullPath = serviceImageFileFullPath    //ex: "/xxx/.../xxx/RadioService.image.png"            
   this.serviceNoConfigMessage = serviceNoConfigMessage;   //ex: "Este script nao necessita de configuraçao"
-  function Category (categoryName,  categoryImage){
+  function Category (categoryName,  categoryImageFileFullPath, categoryHtmlDescription){
     function Station (stationName, stationUrl, stationHtmlDescription)
     {
         this.stationName = stationName;
-        this.stationUrl = stationUrl
-        this.stationHtmlDescription = "ALSO MISSING SOME TODO HERE IN HTML " + stationHtmlDescription;
+        this.stationUrl = stationUrl;
+        this.stationHtmlDescription = stationHtmlDescription;
     }
-    this.categoryName=categoryName;             //text string
-    this.categoryImage=((categoryImage=="")?(""):(Amarok.Info.scriptPath() + "/" + categoryImage)); //this.categoryImage = "" or filename with path relative to main.js directory
-    this.categoryHtmlDescription = "TODO HERE!!!\n" + '<img src="'+this.categoryImage+'" />' + '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
+    this.categoryName=categoryName;                           
+    this.categoryImageFileFullPath=categoryImageFileFullPath;
+    this.categoryHtmlDescription = categoryHtmlDescription;
     this.stationsList = [];
     this.addStation = function addStation (stationName, stationUrl, stationHtmlDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationHtmlDescription ) ); return this;}
   }
   this.categoriesList=[];
-  this.addCategory = function addCategory( categoryName,  categoryImage) 
+  this.addCategory = function addCategory( categoryName,  categoryImageFileFullPath, categoryHtmlDescription) 
   { 
-    var newCategory = new Category (categoryName,  categoryImage);
+    var newCategory = new Category (categoryName,  categoryImageFileFullPath, categoryHtmlDescription);
     this.categoriesList.push(newCategory);
     return newCategory;
   }
@@ -219,12 +322,22 @@ Examples:
   var serviceImage                = "RadioService.image.png";
   var serviceNoConfigMessage      = "Este script nao necessita de configuraçao";
 
-var serviceName                 = //TODO: read from "RadioService.data.json"
-var serviceSlogan               = //TODO: read from "RadioService.data.json"
-var serviceHtmlDescription      = //TODO: read from "RadioService.info.html"
-var serviceImage                = "RadioService.image.png";  //defaults to this file
-var serviceNoConfigMessage      = //TODO: read from "RadioService.data.json"
-var myRadioService=new RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImage,serviceNoConfigMessage);
+
+var serviceHtml_File            = ListFiles(ScriptBaseDir(),"RadioService.info.html")[0];
+var serviceImageFileFullPath    = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
+var serviceDataFile             = ListFiles(ScriptBaseDir(),"RadioService.data.json")[0];
+var serviceDataJson             = ImportJsonFile(serviceDataFile);
+
+var serviceName                 = serviceDataJson.Name;
+var serviceSlogan               = serviceDataJson.Slogan;
+var serviceHtmlDescription      = ReadTextFile(serviceHtml_File);
+var serviceNoConfigMessage      = serviceDataJson.NoConfigMessage
+
+var myRadioService=new RadioService(serviceName,
+                                    serviceSlogan,
+                                    serviceHtmlDescription,
+                                    serviceImageFileFullPath,
+                                    serviceNoConfigMessage);
 */
 
 arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
@@ -234,7 +347,6 @@ for (var i=0; i<arr.length; i++) {
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
 }
-
 /*
   Fill in like this:
 
@@ -249,10 +361,10 @@ for (var i=0; i<arr.length; i++) {
 */
 
 
-//-------------------------------------------------------------------------------------------
-// The remaining lines have automatic code, that will simply use the variable: myRadioService
-// So you should not change them (unless you want to improve all this code :) )
-//-------------------------------------------------------------------------------------------
+/*############################################################################################
+# The remaining lines have automatic code, that will simply use the variable: myRadioService #
+# So you should not change them (unless you want to improve all this code :) )               #
+############################################################################################*/
 
 
 function Service()
@@ -271,25 +383,27 @@ function onConfigure()
 function onPopulating( level, callbackData, filter )
 {
   /* Remembering:
-  Station.
-    .stationName
-    .stationUrl
-    .stationHtmlDescription
-
-  Category.
-    .categoryName
-    .categoryImage
-    .categoryHtmlDescription
-    .stationsList[]
-    .addStation (stationName, stationUrl, stationHtmlDescription)
-    
   RadioService.
     .serviceName
     .serviceSlogan
     .serviceHtmlDescription
+    .serviceImageFullPath
     .serviceNoConfigMessage
     .categoriesList
-    .addCategory (categoryName, categoryImage )
+    .addCategory (categoryName, categoryImageFileFullPath, categoryHtmlDescription)
+
+    Category.
+      .categoryName
+      .categoryImageFileFullPath
+      .categoryHtmlDescription
+      .stationsList[]
+      .addStation (stationName, stationUrl, stationHtmlDescription)
+
+      Station.
+        .stationName
+        .stationUrl
+        .stationHtmlDescription            // can be html code!
+
 
   */
     if ( level == 1 ) 

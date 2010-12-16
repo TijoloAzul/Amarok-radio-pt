@@ -81,7 +81,7 @@ Estrutura ficheiros prevista:
   І   +-- ...
   І   +-- Track.TrackName.data.json
   І   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
-  І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category root dir)
+  І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category dir)
   І   
   +-- main.js
   +-- script.spec
