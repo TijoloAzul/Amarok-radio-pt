@@ -270,11 +270,11 @@ RadioService.
   .serviceImageFullPath
   .serviceNoConfigMessage
   .categoriesList
-  .addCategory (categoryName, categoryImageFileFullPath, categoryHtmlDescription)
+  .addCategory (categoryName, categoryImageFullPath, categoryHtmlDescription)
 
   Category.
     .categoryName
-    .categoryImageFileFullPath
+    .categoryImageFullPath
     .categoryHtmlDescription
     .stationsList[]
     .addStation (stationName, stationUrl, stationHtmlDescription)
@@ -286,45 +286,37 @@ RadioService.
 
 */
 //TODO: check and cleanup the following object's code
-function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImageFileFullPath,serviceNoConfigMessage) {
+function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImageFullPath,serviceNoConfigMessage) {
   this.serviceName = serviceName;                         //ex: "Radios Portuguesas"
   this.serviceSlogan = serviceSlogan;                     //ex: "Escuta em directo as inumeras radios regionais portuguesas"
   this.serviceHtmlDescription = serviceHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
-  this.serviceImageFullPath = serviceImageFileFullPath    //ex: "/xxx/.../xxx/RadioService.image.png"            
+  this.serviceImageFullPath = serviceImageFullPath        //ex: "/xxx/.../xxx/RadioService.image.png"            
   this.serviceNoConfigMessage = serviceNoConfigMessage;   //ex: "Este script nao necessita de configuraçao"
-  function Category (categoryName,  categoryImageFileFullPath, categoryHtmlDescription){
+  function Category (categoryName,  categoryImageFullPath, categoryHtmlDescription){
     function Station (stationName, stationUrl, stationHtmlDescription)
     {
-        this.stationName = stationName;
-        this.stationUrl = stationUrl;
-        this.stationHtmlDescription = stationHtmlDescription;
+        this.stationName = stationName;                         //ex: "Rádio Pico"
+        this.stationUrl = stationUrl;                           //ex: "mms://stream.radio.com.pt/ROLI-ENC-420"
+        this.stationHtmlDescription = stationHtmlDescription;   //ex: "Rádio Pico, Freq: 100.2, Distrito: Açores, Concelho: Madalena"
     }
-    this.categoryName=categoryName;                           
-    this.categoryImageFileFullPath=categoryImageFileFullPath;
-    this.categoryHtmlDescription = categoryHtmlDescription;
+    this.categoryName=categoryName;                           //ex: "Açores"
+    this.categoryImageFullPath=categoryImageFullPath;         //ex: "/xxx/.../xxx/Category.Açores/Category.Açores.image.png"
+    this.categoryHtmlDescription = categoryHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>'
     this.stationsList = [];
     this.addStation = function addStation (stationName, stationUrl, stationHtmlDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationHtmlDescription ) ); return this;}
   }
   this.categoriesList=[];
-  this.addCategory = function addCategory( categoryName,  categoryImageFileFullPath, categoryHtmlDescription) 
+  this.addCategory = function addCategory( categoryName,  categoryImageFullPath, categoryHtmlDescription) 
   { 
-    var newCategory = new Category (categoryName,  categoryImageFileFullPath, categoryHtmlDescription);
+    var newCategory = new Category (categoryName,  categoryImageFullPath, categoryHtmlDescription);
     this.categoriesList.push(newCategory);
     return newCategory;
   }
 }
 
-/* TODO!!!
-Examples:
-  var serviceName                 = "Radios Portuguesas";
-  var serviceSlogan               = "Escuta em directo as inumeras radios regionais portuguesas";
-  var serviceHtmlDescription      = '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
-  var serviceImage                = "RadioService.image.png";
-  var serviceNoConfigMessage      = "Este script nao necessita de configuraçao";
-
 
 var serviceHtml_File            = ListFiles(ScriptBaseDir(),"RadioService.info.html")[0];
-var serviceImageFileFullPath    = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
+var serviceImageFullPath        = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
 var serviceDataFile             = ListFiles(ScriptBaseDir(),"RadioService.data.json")[0];
 var serviceDataJson             = ImportJsonFile(serviceDataFile);
 
@@ -336,9 +328,9 @@ var serviceNoConfigMessage      = serviceDataJson.NoConfigMessage
 var myRadioService=new RadioService(serviceName,
                                     serviceSlogan,
                                     serviceHtmlDescription,
-                                    serviceImageFileFullPath,
+                                    serviceImageFullPath,
                                     serviceNoConfigMessage);
-*/
+
 
 arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
 for (var i=0; i<arr.length; i++) {
@@ -377,12 +369,13 @@ function Service()
 
 function onConfigure()
 {
-    Amarok.alert( myRadioService.serviceNoConfigMessage ); // "This script does not need configuration"
+    Amarok.alert( myRadioService.serviceNoConfigMessage );
 }
 
 function onPopulating( level, callbackData, filter )
 {
   /* Remembering:
+  
   RadioService.
     .serviceName
     .serviceSlogan
@@ -390,11 +383,11 @@ function onPopulating( level, callbackData, filter )
     .serviceImageFullPath
     .serviceNoConfigMessage
     .categoriesList
-    .addCategory (categoryName, categoryImageFileFullPath, categoryHtmlDescription)
+    .addCategory (categoryName, categoryImageFullPath, categoryHtmlDescription)
 
     Category.
       .categoryName
-      .categoryImageFileFullPath
+      .categoryImageFullPath
       .categoryHtmlDescription
       .stationsList[]
       .addStation (stationName, stationUrl, stationHtmlDescription)
@@ -418,7 +411,7 @@ function onPopulating( level, callbackData, filter )
         var category=myRadioService.categoriesList[cat_index];
         item = Amarok.StreamItem;
         item.level = 1;
-        item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object or function!!!
+        item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object nor a function!!!
         item.itemName = category.categoryName;
         item.playableUrl = "";                 //It is a category, so it will not play any URL by itself (Stations have a playable url, but not categories)
         item.infoHtml = category.categoryHtmlDescription;
