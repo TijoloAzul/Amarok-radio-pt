@@ -255,13 +255,6 @@ function ListFiles(fullPath,patternFilter) {
 }
 
 
-
-/* code test-box
-
-
-*/
-
-
 /* Resume of RadioService object
 RadioService.
   .serviceName
@@ -285,7 +278,6 @@ RadioService.
       .stationHtmlDescription            // can be html code!
 
 */
-//TODO: check and cleanup the following object's code
 function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImageFullPath,serviceNoConfigMessage) {
   this.serviceName = serviceName;                         //ex: "Radios Portuguesas"
   this.serviceSlogan = serviceSlogan;                     //ex: "Escuta em directo as inumeras radios regionais portuguesas"
@@ -332,6 +324,9 @@ var myRadioService=new RadioService(serviceName,
                                     serviceNoConfigMessage);
 
 
+
+
+                                    
 arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
 for (var i=0; i<arr.length; i++) {
   myRadioService.addCategory(arr[i],  "Images/Categories/" + arr[i])

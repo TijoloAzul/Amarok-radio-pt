@@ -65,7 +65,6 @@ TODOs main.js e javascripts:
      -TODO: investigar se INFO-APPLET é igual ao anterior SERVICE-APPLET 
      -TODO: investigar o PHOTO-APPLET
          
-         
 
 Estrutura ficheiros prevista:
 
