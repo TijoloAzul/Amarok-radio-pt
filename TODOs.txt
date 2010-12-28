@@ -73,12 +73,11 @@ Estrutura ficheiros prevista:
   І   +-- Category.default.image.png                              (for INFO-APPLET or PHOTOS-APPLET )
   І   +-- Category.default.info.html                              (for INFO-APPLET, html code)
   +-- Category.CategoryName/
-  І   +-- Category.CategoryName.data.json                               
   І   +-- Category.CategoryName.image.png                              (for INFO-APPLET or PHOTOS-APPLET. Also for the icon (image automatically reduced to 32x32))
   І   +-- Category.CategoryName.info.html                              (for INFO-APPLET, html code)
-  І   +-- Track.TrackName.data.json
+  І   +-- Station.StationName.data.json
   І   +-- ...
-  І   +-- Track.TrackName.data.json
+  І   +-- Station.StationName.data.json
   І   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
   І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category dir)
   І   
@@ -91,6 +90,8 @@ Estrutura ficheiros prevista:
     where:
         RadioServiceName = "Radios Portuguesas"
         CategoryName     = "Açores"
-        TrackName        = "Rádio Antena Nova"
+        StationName        = "Rádio Antena Nova"
 
+-------------------------------------------removed for now: 
+  І   +-- Category.CategoryName.data.json                               
 

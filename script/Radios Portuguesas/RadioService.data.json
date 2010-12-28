@@ -1,5 +1,5 @@
 {
-  Name:               "Radios Portuguesas",
+  ServiceName:        "Radios Portuguesas",
   Slogan:             "Escuta em directo as inúmeras radios regionais portuguesas",
   NoConfigMessage:    "Este script não necessita de configuração"
 }

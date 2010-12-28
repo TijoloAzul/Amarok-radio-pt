@@ -217,7 +217,7 @@ function ListDirectories(fullPath,patternFilter) {
       A pattern used to filter the returned results.
       Typical shell wildcards as '*' and '?' can be used
       To return all the results, use as patternFilter "*"
-      Ex: "Category.*.data.json" , "Track.*.data.json"
+      Ex: "Category.*.data.json" , "Station.*.data.json"
       
   Returns:
     arr_filesFullPath (Array of Strings)
@@ -307,14 +307,14 @@ function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceIm
 }
 
 
-var serviceHtml_File            = ListFiles(ScriptBaseDir(),"RadioService.info.html")[0];
-var serviceImageFullPath        = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
-var serviceDataFile             = ListFiles(ScriptBaseDir(),"RadioService.data.json")[0];
-var serviceDataJson             = ImportJsonFile(serviceDataFile);
 
-var serviceName                 = serviceDataJson.Name;
+//Let's read the service data from files
+var serviceImageFullPath        = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
+var serviceDataJson             = ImportJsonFile(ListFiles(ScriptBaseDir(),"RadioService.data.json")[0]);
+
+var serviceName                 = serviceDataJson.ServiceName;
 var serviceSlogan               = serviceDataJson.Slogan;
-var serviceHtmlDescription      = ReadTextFile(serviceHtml_File);
+var serviceHtmlDescription      = ReadTextFile(ListFiles(ScriptBaseDir(),"RadioService.info.html")[0]);
 var serviceNoConfigMessage      = serviceDataJson.NoConfigMessage
 
 var myRadioService=new RadioService(serviceName,
@@ -324,24 +324,33 @@ var myRadioService=new RadioService(serviceName,
                                     serviceNoConfigMessage);
 
 
+//for each category
+  var categoryDir               = //TODO;
+  var categoryName              = CategoryDir.replace(/^.*Category\./,'+++');
+  var categoryImageFullPath     = ListFiles(categoryDir,"Category.*.image.*")[0];
+  var categoryHtmlDescr         = ReadTextFile(ListFiles(categoryDir,"Category.*.info.html")[0]);
+  var category_obj              = myRadioService.addCategory(categoryName,
+                                                             categoryImageFullPath,
+                                                             categoryHtmlDescr);
+  //for each station
+    var stationFileFullPath = //TODO;
+    var stationDataJson     = ImportJsonFile(stationFileFullPath);
+    var stationName         = stationDataJson.stationName;
+    var stationUrl          = stationDataJson.stationUrl;
+    var stationHtmlDescr    = stationDataJson.stationHtmlDescription;
+    category_obj.addStation(stationName,
+                            stationUrl
+                            stationHtmlDescr);
+                            
 
-
-                                    
-arr=["NoImageCategory","icon_categoryDefault.png","icon_script.png","icon_stationDefault.png","tmp_cat120x75.png","tmp_cat320x200.png","tmp_cat32x20.png","tmp_cat640x480.bmp","tmp_cat640x480.gif","tmp_cat640x480.jpg","tmp_cat640x480.png","tmp_cat640x480.ps","tmp_cat64x40.png", "tmp_catGigante.svg", "tmp_catGigante2.ai"];
-for (var i=0; i<arr.length; i++) {
-  myRadioService.addCategory(arr[i],  "Images/Categories/" + arr[i])
-    .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
-    .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
-    ;
-}
 /*
   Fill in like this:
 
-  myRadioService.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
+  myRadioService.addCategory("Write here the category name", "full_path_to_image_file")
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
-  myRadioService.addCategory("Write here the category name", "path/to/category/image/relative/to/main.js")
+  myRadioService.addCategory("Write here the category name", "full_path_to_image_file")
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
     .addStation( "Antena 3","mms://195.245.168.21/antena3","Antena 3" )
     ;
@@ -350,7 +359,7 @@ for (var i=0; i<arr.length; i++) {
 
 /*############################################################################################
 # The remaining lines have automatic code, that will simply use the variable: myRadioService #
-# So you should not change them (unless you want to improve all this code :) )               #
+# So you should not change them unless you want to improve the code from top to bottom :)    #
 ############################################################################################*/
 
 
