@@ -1,5 +1,4 @@
 {
-  stationName:              "Radios Portuguesas",
-  stationUrl:               "Escuta em directo as inúmeras radios regionais portuguesas",
-  stationHtmlDescription:   "something even in clear text"
+  stationUrl:               'mms://stream.radio.com.pt/ROLI-ENC-420',
+  stationHtmlDescription:   '<iframe src ="http://tsf.sapo.pt/">'
 }

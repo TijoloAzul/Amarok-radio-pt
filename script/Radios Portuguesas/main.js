@@ -48,7 +48,7 @@ Importer.loadQtBinding("qt.gui");
   http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0
   http://amarok.kde.org/wiki/Development/Scripted_Services_Tutorial_2.0 (outdated)
 
-  __Qts
+  __Qt
   http://pepper.troll.no/s60prereleases/doc/qtscript.html
   http://doc.trolltech.com/4.6/qfile.html#details
 
@@ -56,7 +56,7 @@ Importer.loadQtBinding("qt.gui");
   http://amarok.kde.org/qtscriptbindings/index.html
   http://amarok.kde.org/qtscriptbindings/qxmlsimplereader.html
     
-  __Javascripts (QtScript uses Javascript 1-5)
+  __Javascripts (QtScript uses Javascript 1.5)
   https://developer.mozilla.org/en/JavaScript/Reference
   http://www.explainth.at/downloads/jsquick.pdf
 
@@ -108,7 +108,7 @@ function ReadTextFile(file) {
   return text_from_file;
   /* to debug the returned results, use:
     //Create a file in /tmp/tmp.txt
-    Amarok.alert(ReadTextFile("/tmp/tmp.txt")
+    Amarok.alert(ReadTextFile("/tmp/tmp.txt"))
   */
 }
 
@@ -172,16 +172,16 @@ function ScriptBaseDir() {
       
   Returns:
     arr_directoriesFullPath (Array of Strings)
-      An Array of String(s) with the full-path of each directory present inside the fullPath. Symbolic links to directories are also returned.
+      An Array of String(s) with the full-path of each directory present inside the fullPath argument. 
+      It may contain the current directory entry "xxxxx/." and the parent directory entry "xxxxx/.."
+      Symbolic links to directories are also returned.
       There is *no* trailing-slash returned in the arr_directoriesFullPath
       Ex: [ "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/.", 
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/..", 
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Castelo Branco", 
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Porto", 
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Defaults" ]
-  
-  
-  
+
   Example:
     var arr_directoriesFullPath = ListDirectories(ScriptBaseDir(),"*");
     >> arr_directoriesFullPath =
@@ -190,8 +190,6 @@ function ScriptBaseDir() {
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Castelo Branco", 
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Category.Porto", 
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/Defaults" ]
-    
-  
 */
 function ListDirectories(fullPath,patternFilter) {
   Importer.loadQtBinding("qt.core");
@@ -221,7 +219,8 @@ function ListDirectories(fullPath,patternFilter) {
       
   Returns:
     arr_filesFullPath (Array of Strings)
-      An Array of String(s) with the full-path of each file present inside the fullPath. Symbolic links to files are also returned.
+      An Array of String(s) with the full-path of each file present inside the fullPath. 
+      Symbolic links to files are also returned.
       There is *no* trailing-slash returned in the arr_filesFullPath
       Ex: [ "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/main.js",
             "/home/paulo/.kde/share/apps/amarok/scripts/Radios Portuguesas/script.spec",
@@ -254,7 +253,6 @@ function ListFiles(fullPath,patternFilter) {
   */
 }
 
-
 /* Resume of RadioService object
 RadioService.
   .serviceName
@@ -262,7 +260,7 @@ RadioService.
   .serviceHtmlDescription
   .serviceImageFullPath
   .serviceNoConfigMessage
-  .categoriesList
+  .categoriesList[]
   .addCategory (categoryName, categoryImageFullPath, categoryHtmlDescription)
 
   Category.
@@ -275,30 +273,29 @@ RadioService.
     Station.
       .stationName
       .stationUrl
-      .stationHtmlDescription            // can be html code!
+      .stationHtmlDescription
 
 */
-function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceImageFullPath,serviceNoConfigMessage) {
-  this.serviceName = serviceName;                         //ex: "Radios Portuguesas"
-  this.serviceSlogan = serviceSlogan;                     //ex: "Escuta em directo as inumeras radios regionais portuguesas"
-  this.serviceHtmlDescription = serviceHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
-  this.serviceImageFullPath = serviceImageFullPath        //ex: "/xxx/.../xxx/RadioService.image.png"            
-  this.serviceNoConfigMessage = serviceNoConfigMessage;   //ex: "Este script nao necessita de configuraçao"
-  function Category (categoryName,  categoryImageFullPath, categoryHtmlDescription){
-    function Station (stationName, stationUrl, stationHtmlDescription)
-    {
-        this.stationName = stationName;                         //ex: "Rádio Pico"
-        this.stationUrl = stationUrl;                           //ex: "mms://stream.radio.com.pt/ROLI-ENC-420"
-        this.stationHtmlDescription = stationHtmlDescription;   //ex: "Rádio Pico, Freq: 100.2, Distrito: Açores, Concelho: Madalena"
-    }
-    this.categoryName=categoryName;                           //ex: "Açores"
-    this.categoryImageFullPath=categoryImageFullPath;         //ex: "/xxx/.../xxx/Category.Açores/Category.Açores.image.png"
-    this.categoryHtmlDescription = categoryHtmlDescription;   //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>'
-    this.stationsList = [];
-    this.addStation = function addStation (stationName, stationUrl, stationHtmlDescription) { this.stationsList.push( new Station( stationName, stationUrl, stationHtmlDescription ) ); return this;}
-  }
+function RadioService(serviceName, serviceSlogan, serviceHtmlDescription, serviceImageFullPath, serviceNoConfigMessage) {
+  this.serviceName                  = serviceName;             //ex: "Radios Portuguesas"
+  this.serviceSlogan                = serviceSlogan;           //ex: "Escuta em directo as inumeras radios regionais portuguesas"
+  this.serviceHtmlDescription       = serviceHtmlDescription;  //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>';
+  this.serviceImageFullPath         = serviceImageFullPath     //ex: "/xxx/.../xxx/RadioService.image.png"            
+  this.serviceNoConfigMessage       = serviceNoConfigMessage;  //ex: "Este script nao necessita de configuraçao"
   this.categoriesList=[];
-  this.addCategory = function addCategory( categoryName,  categoryImageFullPath, categoryHtmlDescription) 
+  function Category (categoryName, categoryImageFullPath, categoryHtmlDescription){
+    this.categoryName                 = categoryName;            //ex: "Açores"
+    this.categoryImageFullPath        = categoryImageFullPath;   //ex: "/xxx/.../xxx/Category.Açores/Category.Açores.image.png"
+    this.categoryHtmlDescription      = categoryHtmlDescription; //ex: '<iframe src="http://amarokradiosscript.blogspot.com/"></iframe>'
+    this.stationsList = [];
+    function Station (stationName, stationUrl, stationHtmlDescription) {
+      this.stationName                  = stationName;             //ex: "Rádio Pico"
+      this.stationUrl                   = stationUrl;              //ex: "mms://stream.radio.com.pt/ROLI-ENC-420"
+      this.stationHtmlDescription       = stationHtmlDescription;  //ex: "Rádio Pico, Freq: 100.2, Distrito: Açores, Concelho: Madalena"
+    }
+    this.addStation = function addStation (stationName, stationUrl, stationHtmlDescription) {this.stationsList.push(new Station(stationName, stationUrl, stationHtmlDescription)); return this;}
+  }
+  this.addCategory = function addCategory(categoryName, categoryImageFullPath, categoryHtmlDescription) 
   { 
     var newCategory = new Category (categoryName,  categoryImageFullPath, categoryHtmlDescription);
     this.categoriesList.push(newCategory);
@@ -308,43 +305,54 @@ function RadioService(serviceName,serviceSlogan,serviceHtmlDescription,serviceIm
 
 
 
-//Let's read the service data from files
-var serviceImageFullPath        = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
-var serviceDataJson             = ImportJsonFile(ListFiles(ScriptBaseDir(),"RadioService.data.json")[0]);
 
+//Let's read the Service info
+var serviceDataJson             = ImportJsonFile(ListFiles(ScriptBaseDir(),"RadioService.data.json")[0]);
 var serviceName                 = serviceDataJson.ServiceName;
 var serviceSlogan               = serviceDataJson.Slogan;
 var serviceHtmlDescription      = ReadTextFile(ListFiles(ScriptBaseDir(),"RadioService.info.html")[0]);
+var serviceImageFullPath        = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
 var serviceNoConfigMessage      = serviceDataJson.NoConfigMessage
-
 var myRadioService=new RadioService(serviceName,
                                     serviceSlogan,
                                     serviceHtmlDescription,
                                     serviceImageFullPath,
                                     serviceNoConfigMessage);
 
-
-//for each category
-  var categoryDir               = //TODO;
-  var categoryName              = CategoryDir.replace(/^.*Category\./,'+++');
-  var categoryImageFullPath     = ListFiles(categoryDir,"Category.*.image.*")[0];
-  var categoryHtmlDescr         = ReadTextFile(ListFiles(categoryDir,"Category.*.info.html")[0]);
-  var category_obj              = myRadioService.addCategory(categoryName,
-                                                             categoryImageFullPath,
-                                                             categoryHtmlDescr);
-  //for each station
-    var stationFileFullPath = //TODO;
-    var stationDataJson     = ImportJsonFile(stationFileFullPath);
-    var stationName         = stationDataJson.stationName;
-    var stationUrl          = stationDataJson.stationUrl;
-    var stationHtmlDescr    = stationDataJson.stationHtmlDescription;
-    category_obj.addStation(stationName,
-                            stationUrl
-                            stationHtmlDescr);
-                            
-
-/*
-  Fill in like this:
+//Now let's read the Categories info and Stations info            
+var categoriesDirFullPath_list = ListDirectories(ScriptBaseDir(),"Category.*");
+for (var cat_index in categoriesDirFullPath_list) {
+  //for each category
+  var categoryDirFullPath         = categoriesDirFullPath_list[cat_index];
+  var categoryName                = categoryDirFullPath.replace(/^.*Category\./i,'');
+    // categoryImageFullPath
+    var categoryImageFullPath       = ScriptBaseDir() + "/Defaults/Category.default.image.png";
+    var resultFile=ListFiles(categoryDirFullPath,"Category.*.image.*")[0];
+    if (resultFile != undefined) { categoryImageFullPath = resultFile; }
+    // categoryHtmlDescr
+    var resultFile = ListFiles(categoryDirFullPath,"Category.*.info.html")[0];
+    if (resultFile == undefined ) { resultFile = ScriptBaseDir()+"/Defaults/Category.default.info.html"; }
+    var categoryHtmlDescr           = ReadTextFile( resultFile ).
+                                        replace('@@categoryName@@',categoryName).
+                                        replace('@@categoryImageFullPath@@',categoryImageFullPath);
+  var categoryObj                 = myRadioService.addCategory(categoryName,
+                                                               categoryImageFullPath,
+                                                               categoryHtmlDescr);
+  
+  var stationsFileFullPath_list = ListFiles(categoryDirFullPath,"Station.*.data.json");                                                          
+  for (var sta_index in stationsFileFullPath_list) {
+    //for each station in the category
+    var stationFileFullPath         = stationsFileFullPath_list[sta_index];
+    var stationDataJson             = ImportJsonFile(stationFileFullPath);
+    var stationName                 = stationFileFullPath.replace(/^.*Station\./i,'').replace(/\.data\.json$/i,'');
+    var stationUrl                  = stationDataJson.stationUrl;
+    var stationHtmlDescr            = stationDataJson.stationHtmlDescription;
+    var categoryObj                 = categoryObj.addStation(stationName,
+                                                             stationUrl,
+                                                             stationHtmlDescr);
+  }
+}
+/*Fill in like this:
 
   myRadioService.addCategory("Write here the category name", "full_path_to_image_file")
     .addStation( "Radio Comercial", "mms://212.113.177.246/comercialcbr48", "Radio Comercial" )
@@ -356,112 +364,99 @@ var myRadioService=new RadioService(serviceName,
     ;
 */
 
+/*######################################################################################################################
+# From this point downward, the remaining lines have automatic code, that will simply use the variable: myRadioService #
+# So you should not change them unless you want to improve the code from top to bottom :)                              #
+######################################################################################################################*/
 
-/*############################################################################################
-# The remaining lines have automatic code, that will simply use the variable: myRadioService #
-# So you should not change them unless you want to improve the code from top to bottom :)    #
-############################################################################################*/
-
-
-function Service()
-{
-    var serviceName=myRadioService.serviceName; 
-    var serviceSlogan=myRadioService.serviceSlogan; 
-    var serviceHtmlDescription=myRadioService.serviceHtmlDescription; 
-    ScriptableServiceScript.call( this, serviceName, 2, serviceSlogan, serviceHtmlDescription, false );
+//NOTE: All code below seems OK
+function Service() {
+  var serviceName=myRadioService.serviceName; 
+  var serviceSlogan=myRadioService.serviceSlogan; 
+  var serviceHtmlDescription=myRadioService.serviceHtmlDescription; 
+  ScriptableServiceScript.call( this, serviceName, 2, serviceSlogan, serviceHtmlDescription, false );
 }
 
-function onConfigure()
-{
-    Amarok.alert( myRadioService.serviceNoConfigMessage );
+function onConfigure() {
+  Amarok.alert( myRadioService.serviceNoConfigMessage );
 }
 
-function onPopulating( level, callbackData, filter )
-{
+function onPopulating(level, callbackData, filter) {
   /* Remembering:
-  
-  RadioService.
-    .serviceName
-    .serviceSlogan
-    .serviceHtmlDescription
-    .serviceImageFullPath
-    .serviceNoConfigMessage
-    .categoriesList
-    .addCategory (categoryName, categoryImageFullPath, categoryHtmlDescription)
 
-    Category.
-      .categoryName
-      .categoryImageFullPath
-      .categoryHtmlDescription
-      .stationsList[]
-      .addStation (stationName, stationUrl, stationHtmlDescription)
+    RadioService.
+      .serviceName
+      .serviceSlogan
+      .serviceHtmlDescription
+      .serviceImageFullPath
+      .serviceNoConfigMessage
+      .categoriesList[]
+      .addCategory (categoryName, categoryImageFullPath, categoryHtmlDescription)
 
-      Station.
-        .stationName
-        .stationUrl
-        .stationHtmlDescription            // can be html code!
+      Category.
+        .categoryName
+        .categoryImageFullPath
+        .categoryHtmlDescription
+        .stationsList[]
+        .addStation (stationName, stationUrl, stationHtmlDescription)
 
-
+        Station.
+          .stationName
+          .stationUrl
+          .stationHtmlDescription
   */
-    if ( level == 1 ) 
-    {
-      /*
-        level = 1
-        callbackData = ""
-        filter = completely ignored
-      */    
-      for( var cat_index=0; cat_index < myRadioService.categoriesList.length; cat_index++)
-      {
-        var category=myRadioService.categoriesList[cat_index];
-        item = Amarok.StreamItem;
-        item.level = 1;
-        item.callbackData = cat_index;         //Caution: callbackData will be stringified - so it must not be an object nor a function!!!
-        item.itemName = category.categoryName;
-        item.playableUrl = "";                 //It is a category, so it will not play any URL by itself (Stations have a playable url, but not categories)
-        item.infoHtml = category.categoryHtmlDescription;
-        //TODO: check next line...
-        item.coverUrl = (category.categoryImage=="")?(Amarok.Info.scriptPath() + "/Images/defaults/icon_categoryDefault.png"):(category.categoryImage);
-        script.insertItem( item );
-        { // debugs
-          /*
-          Amarok.alert("category.categoryName="+category.categoryName+"\n"+
-                    "category.categoryImage="+category.categoryImage);
-          */
-        }
-      }
-      script.donePopulating();
+  if ( level == 1 ) {
+    /*
+      level == 1
+      callbackData = ""
+      filter = completely ignored
+    */    
+    for (var cat_index = 0; cat_index < myRadioService.categoriesList.length; cat_index++) {
+      var category=myRadioService.categoriesList[cat_index];
+      item              = Amarok.StreamItem;
+      item.level        = 1;
+      item.callbackData = cat_index;          /* Coding caution: 
+                                                 item.callbackData will be stringified 
+                                                 So it must not be an object nor a function!!! */
+      item.itemName     = category.categoryName;
+      item.playableUrl  = "";                 /* It is a category, so it will not play any URL by itself 
+                                                 Stations have a playable url, but not categories */
+      item.infoHtml     = category.categoryHtmlDescription;
+      item.coverUrl     = category.categoryImageFullPath;
+      script.insertItem( item );
     }
-    else if ( level == 0 ) 
-    {
-      /*
-        level =0
-        callbackData = index of the selected category within the array myRadioService.categoriesList[]
-        filter = completely ignored
-      */
-      var category=myRadioService.categoriesList[callbackData];
-      var stationsList = category.stationsList;
-      for ( var sta_index = 0; sta_index < stationsList.length; sta_index++ )
-      {
-        var station=stationsList[sta_index];
-        item = Amarok.StreamItem;
-        item.level = 0;
-        item.callbackData = "";
-        item.itemName = station.stationName;
-        item.playableUrl = station.stationUrl;
-        item.album = category.categoryName; 
-        item.infoHtml = station.stationHtmlDescription;
-        item.artist = "Radio-online";
-        //TODO: check next line
-        item.coverUrl = Amarok.Info.scriptPath() + "/Images/defaults/icon_stationDefault.png";
-        script.insertItem( item );
-      }
-      script.donePopulating();
+    script.donePopulating();
+  }
+  else if ( level == 0 ) {
+    /*
+      level == 0
+      callbackData = index of the selected category within the array myRadioService.categoriesList[]
+      filter = completely ignored
+    */
+    var category      = myRadioService.categoriesList[callbackData];
+    var stationsList  = category.stationsList;
+    for (var sta_index = 0; sta_index < stationsList.length; sta_index++) {
+      var station         = stationsList[sta_index];
+      item                = Amarok.StreamItem;
+      item.level          = 0;
+      item.callbackData   = "";
+      item.itemName       = station.stationName;
+      item.playableUrl    = station.stationUrl;
+      item.album          = category.categoryName; 
+      item.infoHtml       = station.stationHtmlDescription;
+      item.artist         = station.stationName;
+      item.coverUrl       = "";     /* A category has an image associated, but 
+                                       a station does not any image associated 
+                                       That's why this attribute is left blank     */
+      script.insertItem( item );
     }
+    script.donePopulating();
+  }
 }
 
 function onCustomize() {
-    var iconPixmap = new QPixmap(myRadioService.serviceImageFullPath);
-    script.setIcon(iconPixmap);
+  var iconPixmap = new QPixmap(myRadioService.serviceImageFullPath);
+  script.setIcon(iconPixmap);
 }
 
 Amarok.configured.connect( onConfigure );
