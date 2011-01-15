@@ -1,12 +1,9 @@
 Vou apontando aqui para nao ir esquecendo:
 
 TODOs a curto-prazo:
-  - na webpage da segunda cat, o valor de @@categorySlideshowImagesUris_arr@@ ainda nao aparece bem.
-    ISto pode ser coisa de conversoes HTML ou erro do codigo main.js (ainda que nao me parece)
-    A soluçao é fazer codigo JS na webpage para o JS mostrar o valor da variavel do @@arr@@
   - criar webpages com qualidade para:
       RadioService
-      Category.default
+      Category.default (com slideshow e Javascript)
       Station.inline.html
 
 TODOs em geral:
