@@ -1,4 +1,34 @@
+/*
+  This file is a normal UTF-8 encoded JSON file 
+  Just fill in following the common-sense, and everything should work just fine
+  
+  The stationUrl field:
+    - will contain the URL of the stream to be played by Amarok for the online-station
+    - example URLS: 
+        'mms://212.113.177.246/comercialcbr48'
+        'http://www.rfm.pt/live/newstream_80srfm_ok.asx'
+        'mms://stream.radio.com.pt/ROLI-ENC-439'
+        
+  The stationHtmlDescription field:
+    - is supposed to have HTML code as in a normal web-page
+    - it can be only oneline :( , but you can make it as long as you want
+    - within the HTML code, the following strings will be substituted at runtime (without the quotes):
+        @@serviceName@@                     , ex: "Radios Portuguesas"
+        @@serviceImageFullPath_Uri@@        , ex: "file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/RadioService.image.png"
+        @@categoryName@@                    , ex: "Açores"
+        @@categoryImageFullPath_Uri@@       , ex: "file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Category.A%C3%A7ores.image.png"
+        @@categorySlideshowImagesUris_arr@@ , ex: "['file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Slideshow_images/image1.png',
+                                                    'file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Slideshow_images/image2.jpg',
+                                                    ...
+                                                    'file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Slideshow_images/imageN.gif'
+                                                   ]"
+                                              This will only be usefull when you have Javascript code inside the HTML code.
+                                              In the Javascript code portion, you can use it like:
+                                                var images_array = @@categorySlideshowImagesUris_arr@@;
+        
+        @@stationName@@                     , ex: "Radio Pico"
+*/
 {
   stationUrl:               'mms://stream.radio.com.pt/ROLI-ENC-420',
-  stationHtmlDescription:   '<iframe src ="http://tsf.sapo.pt/">'
+  stationHtmlDescription:   'serviceName:  @@serviceName@@</p><IMG SRC="@@serviceImageFullPath_Uri@@"/></p>categoryName: @@categoryName@@</p><IMG SRC="@@categoryImageFullPath_Uri@@"/></p>stationName: @@stationName@@</p>'
 }

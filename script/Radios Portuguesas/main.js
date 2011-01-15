@@ -1,4 +1,4 @@
-/*#########################################################################
+﻿/*#########################################################################
 #                                                                         #
 #   In case of any sugestion, please contact: zipizap123 (at) gmail.com   #
 #                                                                         #
@@ -253,6 +253,26 @@ function ListFiles(fullPath,patternFilter) {
   */
 }
 
+/* --- function encodeFilePath_URI(fullPath)
+  Arguments:
+    fullPath (String)
+      A String indicating a full-path to a file
+    
+  Returns:
+    fullPath_URI (String)
+      A String with the fullPath encoded as a file:// URI
+      
+  Example:
+    encodeFilePath_URI("/home/paulo/Dropbox/projs/amarok-radio-pt/Amarok-radio-pt/script/Radios Portuguesas/Category.O primeiro baile/Station.Radio Todos Amigos.data.json")
+    >> file:///home/paulo/Dropbox/projs/amarok-radio-pt/Amarok-radio-pt/script/Radios%20Portuguesas/Category.O%20primeiro%20baile/Station.Radio%20Todos%20Amigos.data.json
+  
+*/
+function encodeFilePath_URI(fullPath) {
+  var fullPath_URI = encodeURI(fullPath);
+  var fullPath_URI = 'file://' + fullPath_URI;
+  return fullPath_URI;
+}
+
 /* Resume of RadioService object
 RadioService.
   .serviceName
@@ -305,14 +325,15 @@ function RadioService(serviceName, serviceSlogan, serviceHtmlDescription, servic
 
 
 
-
 //Let's read the Service info
 var serviceDataJson             = ImportJsonFile(ListFiles(ScriptBaseDir(),"RadioService.data.json")[0]);
 var serviceName                 = serviceDataJson.ServiceName;
 var serviceSlogan               = serviceDataJson.Slogan;
-var serviceHtmlDescription      = ReadTextFile(ListFiles(ScriptBaseDir(),"RadioService.info.html")[0]);
 var serviceImageFullPath        = ListFiles(ScriptBaseDir(),"RadioService.image.*")[0];
-var serviceNoConfigMessage      = serviceDataJson.NoConfigMessage
+var serviceHtmlDescription      = ReadTextFile(ListFiles(ScriptBaseDir(),"RadioService.info.html")[0]).
+                                    replace(/@@serviceName@@/g,serviceName).
+                                    replace(/@@serviceImageFullPath_Uri@@/g, encodeFilePath_URI(serviceImageFullPath));
+var serviceNoConfigMessage      = serviceDataJson.NoConfigMessage;
 var myRadioService=new RadioService(serviceName,
                                     serviceSlogan,
                                     serviceHtmlDescription,
@@ -325,16 +346,27 @@ for (var cat_index in categoriesDirFullPath_list) {
   //for each category
   var categoryDirFullPath         = categoriesDirFullPath_list[cat_index];
   var categoryName                = categoryDirFullPath.replace(/^.*Category\./i,'');
-    // categoryImageFullPath
+  //  categoryImageFullPath
     var categoryImageFullPath       = ScriptBaseDir() + "/Defaults/Category.default.image.png";
-    var resultFile=ListFiles(categoryDirFullPath,"Category.*.image.*")[0];
-    if (resultFile != undefined) { categoryImageFullPath = resultFile; }
-    // categoryHtmlDescr
-    var resultFile = ListFiles(categoryDirFullPath,"Category.*.info.html")[0];
-    if (resultFile == undefined ) { resultFile = ScriptBaseDir()+"/Defaults/Category.default.info.html"; }
+    var resultFile                  = ListFiles(categoryDirFullPath,"Category.*.image.*")[0];
+    if (resultFile != undefined)  { categoryImageFullPath = resultFile; }
+  //  categorySlideshowImagesUris_arr_stringified
+    var slideshow_images            = ListFiles((categoryDirFullPath+'/Slideshow_images'),"*");
+    var categorySlideshowImagesUris_arr_stringified = '[ ';
+    for (var img_index in  slideshow_images) {
+      var image_uri = encodeFilePath_URI(slideshow_images[img_index]);
+      categorySlideshowImagesUris_arr_stringified += ("'" + image_uri + "'" + ' ,');
+    }
+    categorySlideshowImagesUris_arr_stringified = categorySlideshowImagesUris_arr_stringified.replace(/.$/,']');
+  //  categoryHtmlDescr
+    var resultFile                  = ListFiles(categoryDirFullPath,"Category.*.info.html")[0];
+    if (resultFile == undefined ) { resultFile = ScriptBaseDir() + "/Defaults/Category.default.info.html"; }
     var categoryHtmlDescr           = ReadTextFile( resultFile ).
-                                        replace('@@categoryName@@',categoryName).
-                                        replace('@@categoryImageFullPath@@',categoryImageFullPath);
+                                        replace(/@@serviceName@@/g,serviceName).
+                                        replace(/@@serviceImageFullPath_Uri@@/g, encodeFilePath_URI(serviceImageFullPath)).
+                                        replace(/@@categoryName@@/g,categoryName).
+                                        replace(/@@categoryImageFullPath_Uri@@/g, encodeFilePath_URI(categoryImageFullPath)).
+                                        replace(/@@categorySlideshowImagesUris_arr@@/g, categorySlideshowImagesUris_arr_stringified);
   var categoryObj                 = myRadioService.addCategory(categoryName,
                                                                categoryImageFullPath,
                                                                categoryHtmlDescr);
@@ -346,7 +378,13 @@ for (var cat_index in categoriesDirFullPath_list) {
     var stationDataJson             = ImportJsonFile(stationFileFullPath);
     var stationName                 = stationFileFullPath.replace(/^.*Station\./i,'').replace(/\.data\.json$/i,'');
     var stationUrl                  = stationDataJson.stationUrl;
-    var stationHtmlDescr            = stationDataJson.stationHtmlDescription;
+    var stationHtmlDescr            = stationDataJson.stationHtmlDescription.
+                                        replace(/@@serviceName@@/g,serviceName).
+                                        replace(/@@serviceImageFullPath_Uri@@/g, encodeFilePath_URI(serviceImageFullPath)).
+                                        replace(/@@categoryName@@/g,categoryName).
+                                        replace(/@@categoryImageFullPath_Uri@@/g, encodeFilePath_URI(categoryImageFullPath)).
+                                        replace(/@@stationName@@/g,stationName);
+                                        
     var categoryObj                 = categoryObj.addStation(stationName,
                                                              stationUrl,
                                                              stationHtmlDescr);

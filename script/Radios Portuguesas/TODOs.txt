@@ -1,5 +1,13 @@
 Vou apontando aqui para nao ir esquecendo:
 
+TODOs a curto-prazo:
+  - na webpage da segunda cat, o valor de @@categorySlideshowImagesUris_arr@@ ainda nao aparece bem.
+    ISto pode ser coisa de conversoes HTML ou erro do codigo main.js (ainda que nao me parece)
+    A soluçao é fazer codigo JS na webpage para o JS mostrar o valor da variavel do @@arr@@
+  - criar webpages com qualidade para:
+      RadioService
+      Category.default
+      Station.inline.html
 
 TODOs em geral:
  - na kde-apps: deixar instrucoes de como instalar o script (ou fazer um setup.sh)
@@ -29,7 +37,7 @@ TODOs main.js e javascripts:
         Para o script das radios existem varias imagens. As imagens que existem podem-se dividir em:
       - Imagens que representam o script das radios portuguesas, ao lado dos demais scripts do amarok, no menu da Internet (imagem icone opcional + imagem grande opcional)
       - varias imagens que representam cada categoria, dentro do script das radios portuguesas - no nosso caso, cada categoria é um distrito, ou seja, as imagens de cada distrito.
-      PS: nao me esqueci que queremos ter um menu para escolher/mudar a imagem do distrito - estou a comeчar isto com imagens estaticas, e depois que funcione dedico-me ao menu/opчao :)
+
       
       
       
@@ -62,9 +70,15 @@ TODOs main.js e javascripts:
          ou qualquer imagem de categorias ou dos icones, ou do que quizermos...
 
   UPDATE: parece que no novo amarok (v2.3.0 pelo menos), existe um PHOTO-APPLET além do INFO-APPLET
-     -TODO: investigar se INFO-APPLET é igual ao anterior SERVICE-APPLET 
+     -OK: investigar se INFO-APPLET é igual ao anterior SERVICE-APPLET 
+      - Sim, na verdade o INFO-APPLET é nada mais nada menos que o antigo SERVICE-APPLET.
+      - Portanto tudo o que seja HtmlDescription do Serviço ou uma Categoria ou uma Station vai aparecer no INFO-APPLET tal cual.
      -TODO: investigar o PHOTO-APPLET
-         
+      - Parece que as fotos sao procuradas em FLICKR e mostradas automaticamente... (http://amarok.kde.org/wiki/Proposals/Some_ideas_for_the_post_2.1_CV )
+      - Portanto, nao há muito que se possa manipular aqui... simplesmente funciona sozinho... 
+      - No entanto, espero que apanhe fotos interessantes dos concelhos no Flickr...
+     -TODO: investigar o WIKIPEDIA-APPLET (para mostrar info do concelho talvez?!?)
+       - parece que também é automatico, sem parametros de configuraçao... vamos a ver como sai...
 
 Estrutura ficheiros prevista:
 
@@ -78,8 +92,8 @@ Estrutura ficheiros prevista:
   І   +-- Station.StationName.data.json
   І   +-- ...
   І   +-- Station.StationName.data.json
-  І   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
-  І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category dir)
+  І   +-- Slideshow_images/                                            Image files present in this directory will be passed into the category HTML code
+  І       +-- ...image files...
   І   
   +-- main.js
   +-- script.spec
@@ -94,4 +108,6 @@ Estrutura ficheiros prevista:
 
 -------------------------------------------removed for now: 
   І   +-- Category.CategoryName.data.json                               
+  І   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
+  І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category dir)
 
