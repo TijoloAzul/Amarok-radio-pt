@@ -3,7 +3,7 @@ Vou apontando aqui para nao ir esquecendo:
 TODOs a curto-prazo:
   - criar webpages com qualidade para:
       RadioService
-      Category.default (com slideshow e Javascript)
+      OK - Category.default (com slideshow e Javascript)
       Station.inline.html
 
 TODOs em geral:
@@ -91,6 +91,9 @@ Estrutura ficheiros prevista:
   І   +-- Station.StationName.data.json
   І   +-- Slideshow_images/                                            Image files present in this directory will be passed into the category HTML code
   І       +-- ...image files...
+  І   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
+  І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, CSS, Javascript, ... , which can be linked from the Category dir)
+
   І   
   +-- main.js
   +-- script.spec
@@ -105,6 +108,4 @@ Estrutura ficheiros prevista:
 
 -------------------------------------------removed for now: 
   І   +-- Category.CategoryName.data.json                               
-  І   +-- UserContent/                                                 (any user defined data should be left organized inside this directory - the directory will be ignored by the ServiceScript)
-  І       +-- ...whatever...                                           (so it's intended to be used by the user to keep alternative files, like alternative images or alternative hmtl pages, which can be linked from the Category dir)
 

@@ -1,0 +1,30 @@
+<!--
+  Fill in this file with normal Html code, as if it was the Body of a webpage
+  The HTML code will render the view of Amarok's INFORMATION-APPLET
+  
+  Within the HTML code, the following strings will be substituted at runtime, by the proper information (without the quotes):
+        @@serviceName@@                     , ex: "Radios Portuguesas"
+        @@serviceImageFullPath_Uri@@        , ex: "file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/RadioService.image.png"
+        @@categoryName@@                    , ex: "Açores"
+        @@categoryImageFullPath_Uri@@       , ex: "file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Category.A%C3%A7ores.image.png"
+        @@categorySlideshowImagesUris_arr@@ , ex: "['file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Slideshow_images/image1.png',
+                                                    'file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Slideshow_images/image2.jpg',
+                                                    ...
+                                                    'file:///home/paulo/.kde/share/apps/amarok/scripts/Radios%20Portuguesas/Category.A%C3%A7ores/Slideshow_images/imageN.gif'
+                                                   ]"
+                                              This will only be usefull when you have Javascript code inside the HTML code.
+                                              In the Javascript code portion, you can use it like:
+                                                var images_array = @@categorySlideshowImagesUris_arr@@;
+                                                
+                                              
+                                                  
+        
+-->
+<p>serviceName:  @@serviceName@@</p>
+<IMG SRC="@@serviceImageFullPath_Uri@@"/></p>
+<p>categoryName: @@categoryName@@</p>
+<IMG SRC="@@categoryImageFullPath_Uri@@"/></p>
+<p>categorySlideshowImagesUris_arr: @@categorySlideshowImagesUris_arr@@</p>
+<p>___end___</p>
+<script type="text/javascript">
+</script>

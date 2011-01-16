@@ -1,0 +1,88 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <title>JQuery Cycle Plugin - Basic Demo</title> 
+    <style type="text/css"> 
+      .slideshow { height: 232px; width: 232px; margin: auto }
+      .slideshow img { padding: 15px; border: 1px solid #ccc; background-color: transparent; }
+    </style>
+    <!-- include jQuery library --> 
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script> 
+    <!-- include Cycle plugin --> 
+    <script type="text/javascript" src="http://cloud.github.com/downloads/malsup/cycle/jquery.cycle.all.latest.js"></script> 
+    <script type="text/javascript"> 
+      //$(document).ready(function() {
+      function start_slideshow() {
+        $('.slideshow').cycle({
+          fx: 'fade' // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+        });
+      };
+      // :) 
+      function resize_images() {
+          $('.slideshow img').each(function() {
+              var maxWidth = $(window).width(); // Max width for the image
+              var maxHeight = $(window).height();    // Max height for the image
+              var ratio = 0;  // Used for aspect ratio
+              var width = $(this).width();    // Current image width
+              var height = $(this).height();  // Current image height
+       
+              // Check if the current width is larger than the max
+              if(width > maxWidth){
+                  ratio = maxWidth / width;   // get ratio for scaling image
+                  $(this).css("width", maxWidth); // Set new width
+                  $(this).css("height", height * ratio);  // Scale height based on ratio
+                  height = height * ratio;    // Reset height to match scaled image
+                  width = width * ratio;    // Reset width to match scaled image
+              }
+       
+              // Check if current height is larger than max
+              if(height > maxHeight){
+                  ratio = maxHeight / height; // get ratio for scaling image
+                  $(this).css("height", maxHeight);   // Set new height
+                  $(this).css("width", width * ratio);    // Scale width based on ratio
+                  width = width * ratio;    // Reset width to match scaled image
+              }
+          });
+      }
+      
+
+      $(window).resize(resize_images);
+
+      $(function() {
+          setInterval( "resize_images()", 500 );
+      });
+
+    </script> 
+    <!-- receive @@categorySlideshowImagesUris_arr@@ images from Amarok, and insert into DIV slideshow -->
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //var images_uris = @@categorySlideshowImagesUris_arr@@;
+        var images_uris = ['file:///home/paulo/Dropbox/projs/amarok-radio-pt/Amarok-radio-pt/script/Radios%20Portuguesas/Category.O%20primeiro%20baile/Slideshow_images/cat1_img1.png',
+                           'file:///home/paulo/Dropbox/projs/amarok-radio-pt/Amarok-radio-pt/script/Radios%20Portuguesas/Category.O%20primeiro%20baile/Slideshow_images/cat1_img2.png',
+                           'file:///home/paulo/Dropbox/projs/amarok-radio-pt/Amarok-radio-pt/script/Radios%20Portuguesas/Category.O%20primeiro%20baile/Slideshow_images/cat1_img3.png',
+                          ];
+        var slideshow_div = document.getElementById('slideshow');
+        for (var img_index in images_uris) {
+          //Create new_img DOM node
+          var new_img = document.createElement('img');
+          new_img.setAttribute('src', images_uris[img_index]);
+          //Append new_img into slideshow_div
+          slideshow_div.appendChild(new_img);
+        }
+        start_slideshow();
+      })
+    </script>
+  
+  </head> 
+  <body> 
+    <div class="slideshow" id="slideshow"> 
+      <!--
+      <img src="http://cloud.github.com/downloads/malsup/cycle/beach1.jpg" width="200" height="200" /> 
+      <img src="http://cloud.github.com/downloads/malsup/cycle/beach2.jpg" width="200" height="200" /> 
+      <img src="http://cloud.github.com/downloads/malsup/cycle/beach3.jpg" width="200" height="200" /> 
+      <img src="http://cloud.github.com/downloads/malsup/cycle/beach4.jpg" width="200" height="200" /> 
+      <img src="http://cloud.github.com/downloads/malsup/cycle/beach5.jpg" width="200" height="200" /> 
+      -->
+    </div> 
+  </body> 
+</html> 
